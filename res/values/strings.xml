@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">SpiderApi</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_activity_core">SpiderApi</string>
+    <string name="apiname">Spider Api</string>
+
+</resources>
