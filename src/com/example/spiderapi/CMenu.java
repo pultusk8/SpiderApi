@@ -2,11 +2,13 @@ package com.example.spiderapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 public class CMenu extends Activity
 {
 
+	MediaPlayer Player;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -14,6 +16,11 @@ public class CMenu extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu_backg_sound);
 		
+		//seting up sound player
+		Player = MediaPlayer.create(CMenu.this, R.raw.menu_sound);
+		Player.start(); //start playing
+		
+		//starting Main Menu activity before 5sec
 		Thread tTimer = new Thread()
 		{
 			public void run()
@@ -40,9 +47,10 @@ public class CMenu extends Activity
 	@Override
 	protected void onPause() 
 	{
-		// TODO Auto-generated method stub
 		super.onPause();
-		finish();
+		
+		Player.release(); 	//stop playing song and release ram
+		finish();      		//kill loading screen activity
 	}
 	
 	
