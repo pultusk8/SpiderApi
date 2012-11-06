@@ -35,7 +35,7 @@ public class CMenu extends Activity
 				}
 				finally
 				{
-					Intent MainMenu = new Intent("com.example.spiderapi.ACTIVITYCORE");
+					Intent MainMenu = new Intent("com.example.spiderapi.MENU");
 					startActivity(MainMenu);
 				}
 			}
