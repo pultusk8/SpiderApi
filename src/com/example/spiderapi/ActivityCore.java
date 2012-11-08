@@ -60,14 +60,4 @@ public class ActivityCore extends Activity
 			}
 		});      
     }
-
-    
-    
-    
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_activity_core, menu);
-        return true;
-    }
 }

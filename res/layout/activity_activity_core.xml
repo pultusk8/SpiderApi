@@ -15,11 +15,11 @@
 
     <Button
         android:id="@+id/MenuButt_Continue"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:text="Kontynuuj Gre"
+        android:background="@drawable/custom"
         android:textSize="20dp" />
 
     <Button

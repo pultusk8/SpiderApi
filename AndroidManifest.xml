@@ -11,12 +11,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
             android:name=".CMenu"
             android:label="@string/title_activity_activity_core" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -26,17 +26,36 @@
             android:label="@string/title_activity_activity_core" >
             <intent-filter>
                 <action android:name="com.example.spiderapi.ACTIVITYCORE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>        
+        </activity>     
+           
+        <activity
+            android:name=".phonemenu_aboutus"
+            android:theme="@android:style/Theme.Dialog"
+            >
+            <intent-filter>
+                <action android:name="com.example.spiderapi.PHONEMENU_ABOUTUS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity> 
+            
+        <activity
+            android:name=".phonemenu_pref"
+            android:label="@string/title_activity_activity_core" 
+            >
+            <intent-filter>
+                <action android:name="com.example.spiderapi.PHONEMENU_PREF" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>       
+        
         
         <activity
             android:name=".Menu"
             android:label="@string/title_activity_activity_core" >
             <intent-filter>
                 <action android:name="com.example.spiderapi.MENU" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>          
@@ -46,6 +65,11 @@
             android:label="@string/title_activity_activity_core" >
         </activity>            
          
+       	<activity
+            android:name=".gfx"
+            android:label="@string/title_activity_activity_core" >
+        </activity>       
+        
     </application>
 
 </manifest>

@@ -2,8 +2,10 @@ package com.example.spiderapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 public class CMenu extends Activity
 {
@@ -18,7 +20,13 @@ public class CMenu extends Activity
 		
 		//seting up sound player
 		Player = MediaPlayer.create(CMenu.this, R.raw.menu_sound);
-		Player.start(); //start playing
+		
+		//Get preference value about Music on or  off
+		SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		boolean IsSoundON = getPrefs.getBoolean("checkbox", true);
+		
+		if(IsSoundON) 
+			Player.start(); //start playing 
 		
 		//starting Main Menu activity before 5sec
 		Thread tTimer = new Thread()
