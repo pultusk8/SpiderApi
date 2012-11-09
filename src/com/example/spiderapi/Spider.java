@@ -1,6 +1,6 @@
 package com.example.spiderapi;
 
-public class Spider 
+public class Spider
 {
 	public Spider()
 	{

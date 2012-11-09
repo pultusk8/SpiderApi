@@ -26,6 +26,7 @@ public class NewClass extends View
 	protected void onDraw(Canvas canvas) 
 	{
 		super.onDraw(canvas);
+		
 		canvas.drawColor(Color.WHITE);
 		canvas.drawBitmap(gBitmap, 50, changingY, null);
 		

@@ -88,6 +88,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		public void run() 
 		{
+			int goX, goY;
+			goX = goY = 50;
+			boolean GoForward = false;
+			
 			while(IsRunning)
 			{
 				if(!surfHolder.getSurface().isValid())
@@ -95,12 +99,33 @@ public class GFXSurface extends Activity implements OnTouchListener
 				
 				Canvas canvas = surfHolder.lockCanvas();
 				canvas.drawRGB(23, 56, 68);
-				if(x != 0 && y != 0)
-				{
-					Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.button1);
-					canvas.drawBitmap(test, x-(test.getWidth()/2), y-(test.getHeight()/2), null);
-				}	
+						
+				//if(x != 0 && y != 0)
+				//{
+					Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+					canvas.drawBitmap(test, goX, goY, null);
+				//}	
 				surfHolder.unlockCanvasAndPost(canvas);
+							
+				if(GoForward)
+				{				
+					if(goY < 300)
+						goY++;
+					
+					if(goX < 300)
+						goX++;
+					
+					if(goX > 100 || goY > 100)
+						GoForward = false;
+				}
+				else
+				{				
+					goY--;
+					goX--;
+					
+					if(goX < 0 || goY < 0)
+						GoForward = true;
+				}		
 			}
 		}
 	}
