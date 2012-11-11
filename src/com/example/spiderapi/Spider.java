@@ -1,21 +1,24 @@
 package com.example.spiderapi;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+
 public class Spider
 {
-	public Spider()
-	{
-		
-	}
-	
-	int SluffLevel;//wylinka ze slownika :D
+	private int SluffLevel;//wylinka ze slownika :D
 	int SluffTimer;
 	
 	int Health;
 	int Speed;
 	
 	int HungryLevel;
-	int HungryTimer; //when spider whant to eat
+	int HungryTimer; //when spider whant to eat	
 	
+	public Spider()
+	{
+		
+	}
 	
 	/*Worm*/int TargetedWorm;
 	
@@ -57,11 +60,17 @@ public class Spider
 		{
 			
 		}
-	
+		
 	public void OnUpdate()
 	{
 		this.OnEatTime();
 		this.OnMove();
+	}
+	
+	public void OnDraw(Canvas canvas)
+	{
+		//Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+		//canvas.drawBitmap(test, goX, goY, null);	
 	}
 	
 }

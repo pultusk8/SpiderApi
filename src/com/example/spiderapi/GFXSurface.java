@@ -2,6 +2,7 @@ package com.example.spiderapi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -52,13 +53,24 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		SurfaceHolder surfHolder;
 		Thread ThreadOne = null;
+		Thread ThreadTwo = null;
 		boolean IsRunning = false;
+		int goX, goY;
+		int timer;
+		Bitmap test;
+		boolean GoForward;
+		int FPSCounter;
 		
 		public SurfaceClass(Context context)
 		{
 			super(context);
 			surfHolder = getHolder();
-
+			
+			goX = goY = 50;
+			GoForward = false;
+			test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+			timer = 0;
+			FPSCounter = 0;
 		}
 
 		public void pause()
@@ -83,49 +95,162 @@ public class GFXSurface extends Activity implements OnTouchListener
 		{
 			IsRunning = true;
 			ThreadOne = new Thread(this);
-			ThreadOne.start();	
+			ThreadOne.start();
+			ThreadTwo = new Thread(this);
+			ThreadTwo.start();
 		}
 		
 		public void run() 
 		{
-			int goX, goY;
-			goX = goY = 50;
-			boolean GoForward = false;
+			Spider spider = new Spider();
+			Thread currentthread = Thread.currentThread();
+			if(currentthread == null)
+				return;
 			
 			while(IsRunning)
-			{
-				if(!surfHolder.getSurface().isValid())
-					continue;
-				
-				Canvas canvas = surfHolder.lockCanvas();
-				canvas.drawRGB(23, 56, 68);
-						
-				//if(x != 0 && y != 0)
-				//{
-					Bitmap test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
-					canvas.drawBitmap(test, goX, goY, null);
-				//}	
-				surfHolder.unlockCanvasAndPost(canvas);
+			{				
+				if(currentthread == ThreadOne)
+				{	
+					if(!surfHolder.getSurface().isValid())
+						continue;
+					
+					Canvas canvas = surfHolder.lockCanvas();
+					canvas.drawRGB(23, 56, 68);
+					spider.OnDraw(canvas);
 							
-				if(GoForward)
-				{				
-					if(goY < 300)
-						goY++;
+					//if(x != 0 && y != 0)
+					//{
+						
+						canvas.drawBitmap(test, goX, goY, null);
+					//}	
+					surfHolder.unlockCanvasAndPost(canvas);
 					
-					if(goX < 300)
-						goX++;
-					
-					if(goX > 100 || goY > 100)
-						GoForward = false;
+					{
+						if(timer > 60)
+						{
+							if(GoForward)
+							{				
+								if(goY < 300)
+									goY++;
+								
+								if(goX < 300)
+									goX++;
+								
+								if(goX > 100 || goY > 400)
+									GoForward = false;
+							}
+							else
+							{				
+								goY--;
+								goX--;
+								
+								if(goX < 0 || goY < 0)
+									GoForward = true;
+							}
+						}
+						else
+						{
+							if(GoForward)
+							{				
+								if(goY < 300)
+									goY--;
+								
+								if(goX < 300)
+									goX++;
+								
+								if(goX > 100 || goY > 400)
+									GoForward = false;
+							}
+							else
+							{				
+								goY++;
+								goX--;
+								
+								if(goX < 0 || goY < 0)
+									GoForward = true;
+							}					
+						}
+						timer++;
+						
+						if(timer > 120)
+							timer = 0;						
 				}
-				else
-				{				
-					goY--;
-					goX--;
+
+				
+					/*
+				else if(currentthread == ThreadTwo)
+				{
+					if(timer > 60)
+					{
+						if(GoForward)
+						{				
+							if(goY < 300)
+								goY++;
+							
+							if(goX < 300)
+								goX++;
+							
+							if(goX > 100 || goY > 400)
+								GoForward = false;
+						}
+						else
+						{				
+							goY--;
+							goX--;
+							
+							if(goX < 0 || goY < 0)
+								GoForward = true;
+						}
+					}
+					else
+					{
+						if(GoForward)
+						{				
+							if(goY < 300)
+								goY--;
+							
+							if(goX < 300)
+								goX++;
+							
+							if(goX > 100 || goY > 400)
+								GoForward = false;
+						}
+						else
+						{				
+							goY++;
+							goX--;
+							
+							if(goX < 0 || goY < 0)
+								GoForward = true;
+						}					
+					}
+					timer++;
 					
-					if(goX < 0 || goY < 0)
-						GoForward = true;
-				}		
+					if(timer > 120)
+						timer = 0;
+					
+					/*
+					if(FPSCounter > 60)
+					{
+						try
+						{ 
+							int temp = 1000 - FPSCounter;
+							ThreadTwo.sleep(temp);
+							FPSCounter= 0;
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+						finally
+						{
+							
+						}		
+					}
+					FPSCounter++;	
+					*/
+					
+				}				
 			}
 		}
 	}
