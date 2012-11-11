@@ -19,7 +19,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 	float x, y;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Surface = new SurfaceClass(this);
@@ -55,22 +56,13 @@ public class GFXSurface extends Activity implements OnTouchListener
 		Thread ThreadOne = null;
 		Thread ThreadTwo = null;
 		boolean IsRunning = false;
-		int goX, goY;
-		int timer;
-		Bitmap test;
-		boolean GoForward;
-		int FPSCounter;
-		
+
+		Bitmap test = null;
+	
 		public SurfaceClass(Context context)
 		{
 			super(context);
-			surfHolder = getHolder();
-			
-			goX = goY = 50;
-			GoForward = false;
-			test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
-			timer = 0;
-			FPSCounter = 0;
+			surfHolder = getHolder();	
 		}
 
 		public void pause()
@@ -103,153 +95,30 @@ public class GFXSurface extends Activity implements OnTouchListener
 		public void run() 
 		{
 			Spider spider = new Spider();
+			test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+			spider.bitmap = test;
 			Thread currentthread = Thread.currentThread();
 			if(currentthread == null)
 				return;
 			
 			while(IsRunning)
-			{				
+			{	
 				if(currentthread == ThreadOne)
 				{	
 					if(!surfHolder.getSurface().isValid())
 						continue;
 					
+					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(23, 56, 68);
-					spider.OnDraw(canvas);
-							
-					//if(x != 0 && y != 0)
-					//{
-						
-						canvas.drawBitmap(test, goX, goY, null);
-					//}	
-					surfHolder.unlockCanvasAndPost(canvas);
 					
-					{
-						if(timer > 60)
-						{
-							if(GoForward)
-							{				
-								if(goY < 300)
-									goY++;
-								
-								if(goX < 300)
-									goX++;
-								
-								if(goX > 100 || goY > 400)
-									GoForward = false;
-							}
-							else
-							{				
-								goY--;
-								goX--;
-								
-								if(goX < 0 || goY < 0)
-									GoForward = true;
-							}
-						}
-						else
-						{
-							if(GoForward)
-							{				
-								if(goY < 300)
-									goY--;
-								
-								if(goX < 300)
-									goX++;
-								
-								if(goX > 100 || goY > 400)
-									GoForward = false;
-							}
-							else
-							{				
-								goY++;
-								goX--;
-								
-								if(goX < 0 || goY < 0)
-									GoForward = true;
-							}					
-						}
-						timer++;
-						
-						if(timer > 120)
-							timer = 0;						
-				}
-
-				
-					/*
-				else if(currentthread == ThreadTwo)
-				{
-					if(timer > 60)
-					{
-						if(GoForward)
-						{				
-							if(goY < 300)
-								goY++;
-							
-							if(goX < 300)
-								goX++;
-							
-							if(goX > 100 || goY > 400)
-								GoForward = false;
-						}
-						else
-						{				
-							goY--;
-							goX--;
-							
-							if(goX < 0 || goY < 0)
-								GoForward = true;
-						}
-					}
-					else
-					{
-						if(GoForward)
-						{				
-							if(goY < 300)
-								goY--;
-							
-							if(goX < 300)
-								goX++;
-							
-							if(goX > 100 || goY > 400)
-								GoForward = false;
-						}
-						else
-						{				
-							goY++;
-							goX--;
-							
-							if(goX < 0 || goY < 0)
-								GoForward = true;
-						}					
-					}
-					timer++;
-					
-					if(timer > 120)
-						timer = 0;
-					
-					/*
-					if(FPSCounter > 60)
-					{
-						try
-						{ 
-							int temp = 1000 - FPSCounter;
-							ThreadTwo.sleep(temp);
-							FPSCounter= 0;
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
-						finally
-						{
-							
-						}		
-					}
-					FPSCounter++;	
-					*/
-					
+					if(spider != null)	
+					{	
+						spider.OnUpdate();
+						spider.OnDraw(canvas);
+					}							
+			
+					surfHolder.unlockCanvasAndPost(canvas);					
 				}				
 			}
 		}
