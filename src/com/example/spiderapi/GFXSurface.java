@@ -2,11 +2,12 @@ package com.example.spiderapi;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,8 +16,10 @@ import android.view.View.OnTouchListener;
 
 public class GFXSurface extends Activity implements OnTouchListener
 {
-	SurfaceClass Surface;
-	float x, y;
+	SurfaceClass Surface = null;
+	Spider spider = null;
+	boolean CanGetMoveOrders = true;
+	WakeLock wL =  null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -26,7 +29,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 		Surface = new SurfaceClass(this);
 		Surface.setOnTouchListener(this);
 		setContentView(Surface);
-		x = y = 0.0f;
+		spider = new Spider(this, Surface);
+		
+		//wakelock
+		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
+		wL = pM.newWakeLock(PowerManager.FULL_WAKE_LOCK, "whatever");
+		wL.acquire();
 	}
 
 	@Override
@@ -34,6 +42,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		super.onPause();
 		Surface.pause();
+		wL.release();
 	}
 
 	@Override
@@ -41,12 +50,25 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		super.onResume();
 		Surface.resume();
+		wL.acquire();
 	}
 
+	//called when u touch the screen with this activity opened
 	public boolean onTouch(View v, MotionEvent event)
-	{
-		x = event.getX();
-		y = event.getY();
+	{		
+		float fOnTouchX = event.getX();
+		float fOnTouchY = event.getY();
+		
+		switch(event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:		
+				break;
+			case MotionEvent.ACTION_UP:
+				if(CanGetMoveOrders)
+					spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
+				break;
+		}
+
 		return true;
 	}
 	
@@ -59,6 +81,39 @@ public class GFXSurface extends Activity implements OnTouchListener
 
 		Bitmap test = null;
 	
+		public void OnDraw(Canvas canvas,Bitmap bitmap,float fPosX, float fPosY)
+		{
+			canvas.drawBitmap(bitmap, fPosX, fPosY, null);
+		}		
+		
+		public Bitmap LoadBitmap(int SpiderID, int BitmapID)
+		{
+			Bitmap bmp = null;
+			switch(SpiderID)
+			{
+				case 0:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
+						case 1: break;
+					}
+					break;
+				}
+				case 1:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
+						case 1: break;
+					}
+					break;					
+				}	
+			}
+			
+			return bmp; 
+		}		
+		
 		public SurfaceClass(Context context)
 		{
 			super(context);
@@ -91,16 +146,13 @@ public class GFXSurface extends Activity implements OnTouchListener
 			ThreadTwo = new Thread(this);
 			ThreadTwo.start();
 		}
-		
+				
 		public void run() 
 		{
-			Spider spider = new Spider();
-			test = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
-			spider.bitmap = test;
 			Thread currentthread = Thread.currentThread();
 			if(currentthread == null)
 				return;
-			
+						
 			while(IsRunning)
 			{	
 				if(currentthread == ThreadOne)
@@ -110,16 +162,35 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
-					canvas.drawRGB(23, 56, 68);
+					canvas.drawRGB(0, 254, 0);
 					
 					if(spider != null)	
 					{	
-						spider.OnUpdate();
 						spider.OnDraw(canvas);
 					}							
 			
 					surfHolder.unlockCanvasAndPost(canvas);					
-				}				
+				}	
+				
+				if(currentthread == ThreadTwo)
+				{				
+					try
+					{
+						//float FrameRate = 60;
+						//1000 / frame rate
+						//float PauseTime = 1000 / FrameRate;
+						Thread.sleep(16);
+					} 
+					catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}						
+						
+					if(spider != null)	
+					{	
+						spider.OnUpdate();
+					}											
+				}						
 			}
 		}
 	}
