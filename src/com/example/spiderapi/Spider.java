@@ -1,5 +1,7 @@
 package com.example.spiderapi;
 
+import java.util.Random;
+
 import com.example.spiderapi.GFXSurface.SurfaceClass;
 
 import android.content.Context;
@@ -38,26 +40,33 @@ public class Spider
 	private float fGoY = 0.0f;
 	private float fGoZ = 0.0f;
 	private float fSpeed = 1.0f;
-		
+	private float vectorX, vectorY, fNewX, fNewY;	
+	
 	private int timer = 0;
 	
 	Bitmap bitmap = null;
+	
+	private int RandomWaypointTimer = 5000;
+	
+	//Pointers
 	SurfaceClass Surface = null;
+	Terrarium pTerrarium = null;
 	
 	public Spider()
 	{
 
 	}
 	
-	public Spider(Context context, SurfaceClass SurfaceC)
+	public Spider(Context context, SurfaceClass Surface, Terrarium pTerrarium)
 	{
-		Surface = SurfaceC;	
-		bitmap = Surface.LoadBitmap(SpiderType, SluffLevel);
+		this.Surface = Surface;	
+		this.bitmap = Surface.LoadBitmap(SpiderType, SluffLevel);
+		this.pTerrarium = pTerrarium;
 	}	
 	
 	/*Worm*/int TargetedWorm = 0;
 	
-	private void OnEatTime()
+	private void OnEatTime(long diff)
 	{
 		if(HungryLevel < 1)
 		{
@@ -83,18 +92,72 @@ public class Spider
 		Health++;
 	}
 	
-	private void OnMove() 
-	{	
-	    if(fPosX == fGoX && fPosY == fGoY)
+	private void RandomWaypoint()
+	{
+		int TerrX, TerrY;
+		TerrX = pTerrarium.GetX();
+		TerrY = pTerrarium.GetY();
+			
+		long random = System.currentTimeMillis();
+		
+		Random r = new Random();
+		int randomX = r.nextInt((int) random);
+		int randomY = r.nextInt((int) random);
+		
+		int orientation = 1;
+		if(r.nextInt(2) == 0)
+			orientation = -1;
+	
+		vectorX = vectorY = 0.0f;
+		
+		switch(r.nextInt(8))
 	    {
+	        case 0:   vectorX = 1.0f;     vectorY = -1.0f;    break;
+	        case 1: vectorX = 1.0f;     vectorY = 1.0f;     break;
+	        case 2:  vectorX = -1.0f;    vectorY = 1.0f;     break;
+	        case 3:    vectorX = -1.0f;    vectorY = -1.0f;    break;
+	        case 4: 		vectorY = -1.0f; break;
+	        case 5: 		vectorY = 1.0f; break;
+	        case 6: 		vectorX = -1.0f; break;
+	        case 7: 	vectorX = 1.0f; break;
+	        default: break;
+	    }		
+		
+		fGoX = (randomX - (randomX - TerrX)) * vectorX;
+		if(fGoX < 0) 
+			fGoX = (randomX - (randomX - TerrX)) * 1;
+		if(fGoX > TerrX) 
+			fGoX = TerrX;
+		
+		if(r.nextInt(2) == 0)
+			orientation = -1;		
+		
+		fGoY = (randomY - (randomY - TerrY)) * vectorY;
+		if(fGoY < 0) 
+			fGoY = (randomY - (randomY - TerrY)) * 1;
+		
+		
+		
+		if(fGoY > TerrY) fGoY = TerrY;
+	}
+	
+	private void OnMove(long diff) 
+	{	
+    	if(RandomWaypointTimer < diff)
+    	{
+    		RandomWaypoint();
+    		RandomWaypointTimer = 5000;
+    	}RandomWaypointTimer -= diff;	
+		
+	    if(fPosX == fGoX && fPosY == fGoY)
+	    {	
 	        //StopMove(); 
 	        return;
 	    }
 
-	    float vectorX, vectorY, fNewX, fNewY;
 	    vectorX = vectorY = fNewX = fNewY = 0.0f;
 
-	    MoveDirection Move = MoveDirection.UpRight;
+	    MoveDirection Move = null;
 
 	    if(fPosX < fGoX && fPosY < fGoY)
 	    	Move = MoveDirection.DownRight;
@@ -104,15 +167,31 @@ public class Spider
 	    	Move = MoveDirection.UpRight;
 	    if(fPosX > fGoX && fPosY > fGoY)
 	    	Move = MoveDirection.UpLeft;
-
+	    if(fPosX == fGoX && fPosY > fGoY)
+	    	Move = MoveDirection.Up;
+	    if(fPosX == fGoX && fPosY < fGoY)
+	    	Move = MoveDirection.Down;
+	    if(fPosX < fGoX && fPosY == fGoY)
+	    	Move = MoveDirection.Right;
+	    if(fPosX > fGoX && fPosY == fGoY)
+	    	Move = MoveDirection.Left;	    
+	    
 	    int CurrentFrameCol;
 	    
-		switch(Move)
+	    if(Move != null)
 	    {
-	        case UpRight:   vectorX = 1.0f;     vectorY = -1.0f;    CurrentFrameCol = 1; break;
-	        case DownRight: vectorX = 1.0f;     vectorY = 1.0f;     CurrentFrameCol = 1; break;
-	        case DownLeft:  vectorX = -1.0f;    vectorY = 1.0f;     CurrentFrameCol = 0; break;
-	        case UpLeft:    vectorX = -1.0f;    vectorY = -1.0f;    CurrentFrameCol = 0; break;
+			switch(Move)
+		    {
+		        case UpRight:   vectorX = 1.0f;     vectorY = -1.0f;    CurrentFrameCol = 1; break;
+		        case DownRight: vectorX = 1.0f;     vectorY = 1.0f;     CurrentFrameCol = 1; break;
+		        case DownLeft:  vectorX = -1.0f;    vectorY = 1.0f;     CurrentFrameCol = 0; break;
+		        case UpLeft:    vectorX = -1.0f;    vectorY = -1.0f;    CurrentFrameCol = 0; break;
+		        case Up: 		vectorY = -1.0f; break;
+		        case Down: 		vectorY = 1.0f; break;
+		        case Left: 		vectorX = -1.0f; break;
+		        case Right: 	vectorX = 1.0f; break;
+		        default: break;
+		    }
 	    }
 
 	    fNewX = fPosX;
@@ -135,13 +214,13 @@ public class Spider
 		fGoZ = GoZ;
 	}
 	
-	public float GetPosX() { return fPosX; }
-	public float GetPosY() { return fPosY; }
+	//public float GetPosX() { return fPosX; }
+	//public float GetPosY() { return fPosY; }
 		
-	public void OnUpdate()
+	public void OnUpdate(long diff)
 	{
-		this.OnEatTime();
-		this.OnMove();
+		this.OnEatTime(diff);
+		this.OnMove(diff);
 	}
 	
 	public void OnDraw(Canvas canvas)

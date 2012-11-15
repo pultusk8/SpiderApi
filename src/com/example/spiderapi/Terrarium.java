@@ -2,7 +2,10 @@ package com.example.spiderapi;
 
 public class Terrarium 
 {
-	int Height;
-	int Width;
+	private int X = 200;
+	private int Y = 400;
+	
+	public int GetX() {return X; }
+	public int GetY() {return Y; }
 	
 }

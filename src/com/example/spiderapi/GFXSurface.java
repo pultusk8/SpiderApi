@@ -20,16 +20,24 @@ public class GFXSurface extends Activity implements OnTouchListener
 	Spider spider = null;
 	boolean CanGetMoveOrders = true;
 	WakeLock wL =  null;
+	Terrarium pTerrarium;
+	long StartTime, CurrentTime;
+	long LastCurrentTime;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
+		//Timer
+		StartTime = CurrentTime = LastCurrentTime = 0;
+		StartTime = System.currentTimeMillis();
+		
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Surface = new SurfaceClass(this);
 		Surface.setOnTouchListener(this);
 		setContentView(Surface);
-		spider = new Spider(this, Surface);
+		pTerrarium = new Terrarium();
+		spider = new Spider(this, Surface, pTerrarium);
 		
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -154,7 +162,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 				return;
 						
 			while(IsRunning)
-			{	
+			{		
+				CurrentTime = System.currentTimeMillis();	
+				long TimeDiff = CurrentTime - LastCurrentTime;
+				LastCurrentTime = CurrentTime;
+								
 				if(currentthread == ThreadOne)
 				{	
 					if(!surfHolder.getSurface().isValid())
@@ -188,7 +200,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 						
 					if(spider != null)	
 					{	
-						spider.OnUpdate();
+						spider.OnUpdate(TimeDiff);
 					}											
 				}						
 			}
