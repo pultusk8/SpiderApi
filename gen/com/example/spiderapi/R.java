@@ -23,6 +23,7 @@ public final class R {
         public static final int ic_launcher=0x7f020005;
         public static final int menu_background=0x7f020006;
         public static final int spider=0x7f020007;
+        public static final int worm=0x7f020008;
     }
     public static final class id {
         public static final int MenuButt_Continue=0x7f0a0000;

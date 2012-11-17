@@ -1,5 +1,7 @@
 package com.example.spiderapi;
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,10 +19,14 @@ import android.view.View.OnTouchListener;
 public class GFXSurface extends Activity implements OnTouchListener
 {
 	SurfaceClass Surface = null;
+	
+	Terrarium pTerrarium = null;
 	Spider spider = null;
+	Worm worm = null;
+	
 	boolean CanGetMoveOrders = true;
 	WakeLock wL =  null;
-	Terrarium pTerrarium;
+	
 	long StartTime, CurrentTime;
 	long LastCurrentTime;
 	
@@ -31,13 +37,15 @@ public class GFXSurface extends Activity implements OnTouchListener
 		StartTime = CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
 		
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Surface = new SurfaceClass(this);
 		Surface.setOnTouchListener(this);
 		setContentView(Surface);
+		
+		
 		pTerrarium = new Terrarium();
 		spider = new Spider(this, Surface, pTerrarium);
+		worm = new Worm(this, Surface, pTerrarium);
 		
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -105,6 +113,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 					{
 						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
 						case 1: break;
+						default: break;
 					}
 					break;
 				}
@@ -114,9 +123,21 @@ public class GFXSurface extends Activity implements OnTouchListener
 					{
 						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
 						case 1: break;
+						default: break;
 					}
 					break;					
-				}	
+				}
+				//Test Worm
+				case 10:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.worm); break;
+						default: break;
+					}
+					break;	
+				}
+				default: break;
 			}
 			
 			return bmp; 
@@ -181,6 +202,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 						spider.OnDraw(canvas);
 					}							
 			
+					if(worm != null)
+						worm.OnDraw(canvas);
+					
 					surfHolder.unlockCanvasAndPost(canvas);					
 				}	
 				
@@ -188,10 +212,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 				{				
 					try
 					{
-						//float FrameRate = 60;
-						//1000 / frame rate
-						//float PauseTime = 1000 / FrameRate;
-						Thread.sleep(16);
+						float FrameRate = 60;
+						float PauseTime = 1000 / FrameRate;
+						Thread.sleep((long) PauseTime);
 					} 
 					catch (InterruptedException e) 
 					{
@@ -204,6 +227,27 @@ public class GFXSurface extends Activity implements OnTouchListener
 					}											
 				}						
 			}
+		}
+		
+		public Worm GetWormFromTerrarium()
+		{
+			if(worm.GetX() > 0 && worm.GetX() < pTerrarium.GetX())
+			{
+				if(worm.GetY() > 0 && worm.GetY() < pTerrarium.GetY())
+				{
+					if(!worm.IsDeath)
+						return worm;
+				}
+			}
+			return null;
+		}	
+		
+		public void CreateNewWorm()
+		{
+			worm = new Worm(Surface, pTerrarium);
+			Random r = new Random();
+			
+			worm.SetPosition(r.nextInt(200), r.nextInt(300));
 		}
 	}
 }

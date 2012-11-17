@@ -36,19 +36,18 @@ public class Spider
 	//Moving Variables
 	private float fPosX = 50.0f;
 	private float fPosY = 50.0f;
-	private float fGoX = 0.0f;
-	private float fGoY = 0.0f;
+	private float fGoX = 50.0f;
+	private float fGoY = 50.0f;
 	private float fGoZ = 0.0f;
-	private float fSpeed = 1.0f;
+	private float fSpeed = 0.5f;
 	private float vectorX, vectorY, fNewX, fNewY;	
-	
-	private int timer = 0;
-	
+		
 	Bitmap bitmap = null;
 	
 	private int RandomWaypointTimer = 5000;
 	
 	//Pointers
+	Worm worm = null;
 	SurfaceClass Surface = null;
 	Terrarium pTerrarium = null;
 	
@@ -63,33 +62,29 @@ public class Spider
 		this.bitmap = Surface.LoadBitmap(SpiderType, SluffLevel);
 		this.pTerrarium = pTerrarium;
 	}	
-	
-	/*Worm*/int TargetedWorm = 0;
-	
+		
 	private void OnEatTime(long diff)
 	{
-		if(HungryLevel < 1)
+		if(worm == null)
 		{
-			Health--;
-			SelectWormToEat();
+	    	if(HungryTimer < diff)
+	    	{
+	    		worm = Surface.GetWormFromTerrarium();
+	    		fGoX = worm.GetX();
+	    		fGoY = worm.GetY();
+	    	}HungryTimer -= diff;
 		}
-		
-		if(TargetedWorm == 1)
+	
+		if(worm != null)
 		{
-			//if is on range to eat
-			Eat();
-		}		
-	}
-	
-	private void SelectWormToEat()
-	{
-		TargetedWorm = 1;
-	}
-	
-	private void Eat(/* WormClass target*/) 
-	{
-		TargetedWorm = 0;
-		Health++;
+			if(fPosX == worm.GetX() && fPosY == worm.GetY())
+			{
+				worm.Remove();
+				HungryTimer = 8000;
+				worm = null;
+				Surface.CreateNewWorm();
+			}
+		}			
 	}
 	
 	private void RandomWaypoint()
@@ -104,10 +99,6 @@ public class Spider
 		int randomX = r.nextInt((int) random);
 		int randomY = r.nextInt((int) random);
 		
-		int orientation = 1;
-		if(r.nextInt(2) == 0)
-			orientation = -1;
-	
 		vectorX = vectorY = 0.0f;
 		
 		switch(r.nextInt(8))
@@ -125,29 +116,30 @@ public class Spider
 		
 		fGoX = (randomX - (randomX - TerrX)) * vectorX;
 		if(fGoX < 0) 
-			fGoX = (randomX - (randomX - TerrX)) * 1;
+			RandomWaypoint();
+			//fGoX = (randomX - (randomX - TerrX)) * 1;
 		if(fGoX > TerrX) 
-			fGoX = TerrX;
-		
-		if(r.nextInt(2) == 0)
-			orientation = -1;		
-		
+			RandomWaypoint();
+			//fGoX = TerrX;
 		fGoY = (randomY - (randomY - TerrY)) * vectorY;
 		if(fGoY < 0) 
-			fGoY = (randomY - (randomY - TerrY)) * 1;
-		
-		
-		
-		if(fGoY > TerrY) fGoY = TerrY;
+			//fGoY = (randomY - (randomY - TerrY)) * 1;
+			RandomWaypoint();
+		if(fGoY > TerrY)
+			RandomWaypoint();
 	}
+	
 	
 	private void OnMove(long diff) 
 	{	
-    	if(RandomWaypointTimer < diff)
-    	{
-    		RandomWaypoint();
-    		RandomWaypointTimer = 5000;
-    	}RandomWaypointTimer -= diff;	
+		if(worm == null)
+		{
+	    	if(RandomWaypointTimer < diff)
+	    	{
+	    		RandomWaypoint();
+	    		RandomWaypointTimer = 2000;
+	    	}RandomWaypointTimer -= diff;	
+		}
 		
 	    if(fPosX == fGoX && fPosY == fGoY)
 	    {	
@@ -218,7 +210,7 @@ public class Spider
 	//public float GetPosY() { return fPosY; }
 		
 	public void OnUpdate(long diff)
-	{
+	{	
 		this.OnEatTime(diff);
 		this.OnMove(diff);
 	}
