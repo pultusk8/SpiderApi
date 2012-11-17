@@ -2,65 +2,39 @@ package com.example.spiderapi;
 
 import java.util.Random;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class Spider
-{
-	private enum MoveDirection
-	{
-		Right,
-	    UpRight,
-	    Left,
-	    UpLeft,
-	    Down,
-	    DownRight,
-	    DownLeft,
-	    Up,
-	}	
-	
-	private int SpiderType = 0;
-	
+import com.example.spiderapi.GFXSurface.SurfaceClass;
+
+public class Spider extends Animal
+{	
 	private int SluffLevel = 0;//wylinka ze slownika :D
-	private int SluffTimer;
+	private int SluffTimer = 10000;
 	
 	private int Health = 40;
-	
 	
 	private int HungryLevel = 0;
 	private int HungryTimer = 5000; //when spider whant to eat	
 	
 	//Moving Variables
-	private float fPosX = 50.0f;
-	private float fPosY = 50.0f;
 	private float fGoX = 50.0f;
 	private float fGoY = 50.0f;
 	private float fGoZ = 0.0f;
-	private float fSpeed = 0.5f;
-	private float vectorX, vectorY, fNewX, fNewY;	
-		
-	Bitmap bitmap = null;
 	
+	private float vectorX, vectorY, fNewX, fNewY;	
+			
 	private int RandomWaypointTimer = 5000;
 	
 	//Pointers
-	Worm worm = null;
-	SurfaceClass Surface = null;
-	Terrarium pTerrarium = null;
+	Worm worm = null;	
 	
-	public Spider()
-	{
-
-	}
-	
-	public Spider(Context context, SurfaceClass Surface, Terrarium pTerrarium)
+	public Spider(SurfaceClass Surface, Terrarium pTerrarium)
 	{
 		this.Surface = Surface;	
-		this.bitmap = Surface.LoadBitmap(SpiderType, SluffLevel);
+		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
 		this.pTerrarium = pTerrarium;
+		this.SetPosition(19,45);
+		fSpeed = 0.5f;
 	}	
 		
 	private void OnEatTime(long diff)
@@ -129,7 +103,6 @@ public class Spider
 			RandomWaypoint();
 	}
 	
-	
 	private void OnMove(long diff) 
 	{	
 		if(worm == null)
@@ -167,21 +140,19 @@ public class Spider
 	    	Move = MoveDirection.Right;
 	    if(fPosX > fGoX && fPosY == fGoY)
 	    	Move = MoveDirection.Left;	    
-	    
-	    int CurrentFrameCol;
-	    
+	        
 	    if(Move != null)
 	    {
 			switch(Move)
 		    {
-		        case UpRight:   vectorX = 1.0f;     vectorY = -1.0f;    CurrentFrameCol = 1; break;
-		        case DownRight: vectorX = 1.0f;     vectorY = 1.0f;     CurrentFrameCol = 1; break;
-		        case DownLeft:  vectorX = -1.0f;    vectorY = 1.0f;     CurrentFrameCol = 0; break;
-		        case UpLeft:    vectorX = -1.0f;    vectorY = -1.0f;    CurrentFrameCol = 0; break;
-		        case Up: 		vectorY = -1.0f; break;
-		        case Down: 		vectorY = 1.0f; break;
-		        case Left: 		vectorX = -1.0f; break;
-		        case Right: 	vectorX = 1.0f; break;
+		        case UpRight:   vectorX = 1.0f;     vectorY = -1.0f; break;
+		        case DownRight: vectorX = 1.0f;     vectorY = 1.0f;  break;
+		        case DownLeft:  vectorX = -1.0f;    vectorY = 1.0f;  break;
+		        case UpLeft:    vectorX = -1.0f;    vectorY = -1.0f; break;
+		        case Up: 		vectorY = -1.0f; 	break;
+		        case Down: 		vectorY = 1.0f; 	break;
+		        case Left: 		vectorX = -1.0f; 	break;
+		        case Right: 	vectorX = 1.0f; 	break;
 		        default: break;
 		    }
 	    }
@@ -204,19 +175,34 @@ public class Spider
 		fGoX = GoX;
 		fGoY = GoY;
 		fGoZ = GoZ;
+		worm = null;
+	}
+		
+	public void GetNewSluff()
+	{
+		++SluffLevel;
+		this.bitmap = Surface.LoadBitmap(ObjectID, SluffLevel);
+		SluffTimer = 30000;
 	}
 	
-	//public float GetPosX() { return fPosX; }
-	//public float GetPosY() { return fPosY; }
-		
+	@Override	
 	public void OnUpdate(long diff)
 	{	
+		super.OnUpdate(diff);
+		
+    	if(SluffTimer < diff)
+    	{
+    		GetNewSluff();
+    	}SluffTimer -= diff;	
+	
 		this.OnEatTime(diff);
 		this.OnMove(diff);
 	}
-	
-	public void OnDraw(Canvas canvas)
+
+	@Override
+	public void OnDraw(Canvas canvas) 
 	{
-		Surface.OnDraw(canvas, bitmap, fPosX, fPosY);
-	}	
+		super.OnDraw(canvas);
+	}
+	
 }

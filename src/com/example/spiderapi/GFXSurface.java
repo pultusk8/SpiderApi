@@ -43,9 +43,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 		setContentView(Surface);
 		
 		
-		pTerrarium = new Terrarium();
-		spider = new Spider(this, Surface, pTerrarium);
-		worm = new Worm(this, Surface, pTerrarium);
+		pTerrarium = new Terrarium(Surface);
+		spider = new Spider(Surface, pTerrarium);
+		worm = new Worm(Surface, pTerrarium);
+		worm.SetPosition(33,66);
 		
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -104,15 +105,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		public Bitmap LoadBitmap(int SpiderID, int BitmapID)
 		{
-			Bitmap bmp = null;
+			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
 			switch(SpiderID)
 			{
+				//Spider
 				case 0:
 				{
 					switch(BitmapID)
 					{
 						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
-						case 1: break;
+						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider02); break;
 						default: break;
 					}
 					break;
@@ -136,6 +138,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 						default: break;
 					}
 					break;	
+				}
+				//Terrarium
+				case 20:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.terrarium01); break;
+						default: break;
+					}
+					break;		
 				}
 				default: break;
 			}
@@ -196,6 +208,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(0, 254, 0);
+									
+					if(pTerrarium != null)
+						pTerrarium.OnDraw(canvas);		
 					
 					if(spider != null)	
 					{	
