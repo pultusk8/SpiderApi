@@ -4,6 +4,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -30,6 +31,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 	long StartTime, CurrentTime;
 	long LastCurrentTime;
 	
+	//Save Load Variables
+	public static String filename = "SaveData";
+	SharedPreferences Data = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -52,14 +57,53 @@ public class GFXSurface extends Activity implements OnTouchListener
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
 		wL = pM.newWakeLock(PowerManager.FULL_WAKE_LOCK, "whatever");
 		wL.acquire();
+		
+		//save load 
+		Data = getSharedPreferences(filename, 0);
+		
+		OnLoad();
 	}
 
+	private void OnSave()
+	{
+		if(spider == null)
+			return;
+		
+		long TimeSaved = System.currentTimeMillis();
+		String SpiderName = "Spider";
+				
+		float X = spider.GetX();
+		float Y = spider.GetY();
+
+		SharedPreferences.Editor Editor = Data.edit();
+		Editor.putString("Name", SpiderName);
+		Editor.putLong("Time", TimeSaved);
+		Editor.putFloat("X", X);
+		Editor.putFloat("Y", Y);
+		
+		Editor.commit();	
+	}
+	
+	private void OnLoad()
+	{
+		if(spider == null)
+			return;		
+		
+		Data = getSharedPreferences(filename, 0);
+		String LoadedString = Data.getString("Name", "no string at this key");
+		long LoadedTime = Data.getLong("Time", 0);
+		float x = Data.getFloat("X", 0);
+		float y = Data.getFloat("Y", 0);
+		spider.SetPosition(x, y);	
+	}
+	
 	@Override
 	protected void onPause() 
 	{
+		OnSave();
 		super.onPause();
 		Surface.pause();
-		wL.release();
+		wL.release();	
 	}
 
 	@Override
