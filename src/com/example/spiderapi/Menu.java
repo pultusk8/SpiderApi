@@ -2,6 +2,7 @@ package com.example.spiderapi;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,8 +15,11 @@ import android.widget.ListView;
 //Main ProgrAM mENU
 public class Menu extends ListActivity
 {
-	String classes[] = { "ActivityCore", "Text", "example2", "example3"
-			, "example4", "gfx", "GFXSurface"};
+	String names[] = { "Nowa Gra"};
+	
+	String classes[] = { "GFXSurface"};	
+	
+	MediaPlayer Player = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -27,7 +31,7 @@ public class Menu extends ListActivity
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		setListAdapter(new ArrayAdapter<String>(Menu.this, android.R.layout.simple_list_item_1, classes));
+		setListAdapter(new ArrayAdapter<String>(Menu.this, android.R.layout.simple_list_item_1, names));
 	}	
 	
 	@Override
@@ -37,6 +41,9 @@ public class Menu extends ListActivity
 		super.onListItemClick(l, v, position, id);
 		
 		String strString = classes[position];
+		
+		
+		Player.start();
 		
 		//starting activity
 		try
@@ -84,4 +91,22 @@ public class Menu extends ListActivity
 		
 		return false;
 	}
+	
+	@Override
+	protected void onPause() 
+	{
+		super.onPause();
+		Player.stop();
+		Player.release(); 	//stop playing song and release ram
+	}
+
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
+		Player = MediaPlayer.create(Menu.this, R.raw.buttonclick);
+	}
 }
+
+
+

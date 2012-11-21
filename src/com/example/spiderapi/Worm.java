@@ -7,9 +7,12 @@ import android.graphics.Canvas;
 public class Worm extends Animal
 {		
 	boolean IsDeath = false;
-
+	boolean IsMoving = false;
+	
 	public Worm(SurfaceClass Surface, Terrarium pTerrarium) 
 	{
+		fWidth = 20.0f;
+		fHeight = 20.0f;
 		ObjectID = 10;
 		BitmapID = 0;
 		this.Surface = Surface;	
@@ -26,8 +29,16 @@ public class Worm extends Animal
 		super.OnDraw(canvas);
 	}
 
-	public void Remove()
+	@Override
+	public void OnUpdate(long diff) 
 	{
+		super.OnUpdate(diff);
+	}
+
+	@Override
+	public void OnRemove()
+	{
+		super.OnRemove();
 		IsDeath = true;
 	}
 }

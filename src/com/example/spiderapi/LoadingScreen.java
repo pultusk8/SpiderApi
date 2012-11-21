@@ -7,19 +7,18 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-public class CMenu extends Activity
+public class LoadingScreen extends Activity
 {
-
-	MediaPlayer Player;
+	MediaPlayer Player = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu_backg_sound);
 		
 		//seting up sound player
-		Player = MediaPlayer.create(CMenu.this, R.raw.menu_sound);
+		Player = MediaPlayer.create(LoadingScreen.this, R.raw.menu_sound);
 		
 		//Get preference value about Music on or  off
 		SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -27,7 +26,7 @@ public class CMenu extends Activity
 		
 		if(IsSoundON) 
 			Player.start(); //start playing 
-		
+
 		//starting Main Menu activity before 5sec
 		Thread tTimer = new Thread()
 		{

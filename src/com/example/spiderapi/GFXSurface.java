@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -19,11 +20,14 @@ import android.view.View.OnTouchListener;
 
 public class GFXSurface extends Activity implements OnTouchListener
 {
+	//Media Player for all items in apliaction
+	
 	SurfaceClass Surface = null;
 	
 	Terrarium pTerrarium = null;
 	Spider spider = null;
-	Worm worm = null;
+	WormBox wormbox = null;
+	WormMenager WormMgr = null;
 	
 	boolean CanGetMoveOrders = true;
 	WakeLock wL =  null;
@@ -34,6 +38,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 	//Save Load Variables
 	public static String filename = "SaveData";
 	SharedPreferences Data = null;
+	
+	
+	//OnTouch Actions
+	WormBox TouchedWormBox = null;
+	Worm TouchedWorm = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -47,12 +56,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 		Surface.setOnTouchListener(this);
 		setContentView(Surface);
 		
-		
+		WormMgr = new WormMenager(Surface, pTerrarium);
 		pTerrarium = new Terrarium(Surface);
-		spider = new Spider(Surface, pTerrarium);
-		worm = new Worm(Surface, pTerrarium);
-		worm.SetPosition(33,66);
-		
+		spider = new Spider(Surface, pTerrarium, WormMgr);
+		wormbox = new WormBox(Surface, pTerrarium);
+
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
 		wL = pM.newWakeLock(PowerManager.FULL_WAKE_LOCK, "whatever");
@@ -60,8 +68,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		//save load 
 		Data = getSharedPreferences(filename, 0);
-		
-		OnLoad();
 	}
 
 	private void OnSave()
@@ -103,15 +109,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 		OnSave();
 		super.onPause();
 		Surface.pause();
-		wL.release();	
+		wL.release(); //wakelock	 
 	}
 
 	@Override
 	protected void onResume() 
 	{
+		OnLoad();
 		super.onResume();
 		Surface.resume();
-		wL.acquire();
+		wL.acquire(); //wakelock
 	}
 
 	//called when u touch the screen with this activity opened
@@ -120,13 +127,31 @@ public class GFXSurface extends Activity implements OnTouchListener
 		float fOnTouchX = event.getX();
 		float fOnTouchY = event.getY();
 		
+		if(TouchedWorm != null)
+			TouchedWorm.SetPosition(fOnTouchX, fOnTouchY);
+		
 		switch(event.getAction())
 		{
-			case MotionEvent.ACTION_DOWN:		
+			case MotionEvent.ACTION_DOWN:
+			{
+				TouchedWorm = WormMgr.GetWorm(fOnTouchX, fOnTouchY);
+					
+				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
+				{
+					TouchedWorm = wormbox.GetWorm();
+					WormMgr.AddWorm(TouchedWorm);
+				}
 				break;
+			}
 			case MotionEvent.ACTION_UP:
+			{
+				TouchedWorm = null;
+				
 				if(CanGetMoveOrders)
 					spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
+				break;
+			}
+			default:
 				break;
 		}
 
@@ -135,12 +160,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 	
 	public class SurfaceClass extends SurfaceView implements Runnable
 	{
-		SurfaceHolder surfHolder;
-		Thread ThreadOne = null;
-		Thread ThreadTwo = null;
-		boolean IsRunning = false;
-
-		Bitmap test = null;
+		private SurfaceHolder surfHolder = null;
+		private Thread ThreadOne = null;
+		private Thread ThreadTwo = null;
+		private boolean IsRunning = false;
 	
 		public void OnDraw(Canvas canvas,Bitmap bitmap,float fPosX, float fPosY)
 		{
@@ -192,6 +215,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 						default: break;
 					}
 					break;		
+				}
+				//worm box
+				case 30:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wormbox01); break;
+						default: break;
+					}
+					break;					
 				}
 				default: break;
 			}
@@ -251,20 +284,20 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
-					canvas.drawRGB(0, 254, 0);
-									
-					if(pTerrarium != null)
-						pTerrarium.OnDraw(canvas);		
+		
+					//if(pTerrarium != null)
+						//pTerrarium.OnDraw(canvas);		
 					
 					if(spider != null)	
-					{	
 						spider.OnDraw(canvas);
-					}							
-			
-					if(worm != null)
-						worm.OnDraw(canvas);
+							
+					if(wormbox != null)
+						wormbox.OnDraw(canvas);
 					
-					surfHolder.unlockCanvasAndPost(canvas);					
+					if(WormMgr != null)
+						WormMgr.OnDraw(canvas);
+					
+					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
 				
 				if(currentthread == ThreadTwo)
@@ -280,33 +313,13 @@ public class GFXSurface extends Activity implements OnTouchListener
 						e.printStackTrace();
 					}						
 						
-					if(spider != null)	
-					{	
+					if(spider != null)		
 						spider.OnUpdate(TimeDiff);
-					}											
+					
+					if(wormbox != null)
+						wormbox.OnUpdate(TimeDiff);
 				}						
 			}
-		}
-		
-		public Worm GetWormFromTerrarium()
-		{
-			if(worm.GetX() > 0 && worm.GetX() < pTerrarium.GetX())
-			{
-				if(worm.GetY() > 0 && worm.GetY() < pTerrarium.GetY())
-				{
-					if(!worm.IsDeath)
-						return worm;
-				}
-			}
-			return null;
-		}	
-		
-		public void CreateNewWorm()
-		{
-			worm = new Worm(Surface, pTerrarium);
-			Random r = new Random();
-			
-			worm.SetPosition(r.nextInt(200), r.nextInt(300));
 		}
 	}
 }

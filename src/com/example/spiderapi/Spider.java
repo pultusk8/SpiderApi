@@ -28,13 +28,17 @@ public class Spider extends Animal
 	//Pointers
 	Worm worm = null;	
 	
-	public Spider(SurfaceClass Surface, Terrarium pTerrarium)
+	WormMenager WormMgr = null;
+	
+	public Spider(SurfaceClass Surface, Terrarium pTerrarium, WormMenager WormMgr)
 	{
 		this.Surface = Surface;	
 		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
 		this.pTerrarium = pTerrarium;
 		this.SetPosition(19,45);
 		fSpeed = 0.5f;
+		
+		this.WormMgr = WormMgr;
 	}	
 		
 	private void OnEatTime(long diff)
@@ -43,20 +47,22 @@ public class Spider extends Animal
 		{
 	    	if(HungryTimer < diff)
 	    	{
-	    		worm = Surface.GetWormFromTerrarium();
-	    		fGoX = worm.GetX();
-	    		fGoY = worm.GetY();
+	    		worm = WormMgr.GetWorm();
+	    		if(worm != null)
+	    		{
+		    		fGoX = worm.GetX();
+		    		fGoY = worm.GetY();
+	    		}
+	    		HungryTimer = 20000;
 	    	}HungryTimer -= diff;
 		}
-	
-		if(worm != null)
+		else
 		{
 			if(fPosX == worm.GetX() && fPosY == worm.GetY())
 			{
-				worm.Remove();
+				WormMgr.RemoveWorm(worm);
 				HungryTimer = 8000;
 				worm = null;
-				Surface.CreateNewWorm();
 			}
 		}			
 	}

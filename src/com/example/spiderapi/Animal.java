@@ -12,7 +12,10 @@ public class Animal
 	
 	protected float fPosX = 50.0f;
 	protected float fPosY = 50.0f;
+	protected float fHeight = 0.0f;
+	protected float fWidth = 0.0f;
 	protected float fSpeed = 0.0f;
+	protected float fOrientation = 0.0f;
 	
 	protected Bitmap bitmap = null;
 	protected SurfaceClass Surface = null;
@@ -20,6 +23,9 @@ public class Animal
 	
 	public float GetX() { return fPosX; }
 	public float GetY() { return fPosY; }
+	public float GetW() { return fWidth; }
+	public float GetH() { return fHeight; }
+	
 	public void SetPosition(float posX, float posY) { fPosX = posX; fPosY = posY; }
 	
 	public void OnDraw(Canvas canvas)
@@ -31,4 +37,9 @@ public class Animal
 	{	
 		
 	}	
+	
+	public void OnRemove()	
+	{
+		
+	}
 }

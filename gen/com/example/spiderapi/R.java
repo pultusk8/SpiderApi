@@ -26,47 +26,24 @@ public final class R {
         public static final int spider02=0x7f020008;
         public static final int terrarium01=0x7f020009;
         public static final int worm=0x7f02000a;
+        public static final int wormbox01=0x7f02000b;
     }
     public static final class id {
-        public static final int MenuButt_Continue=0x7f0a0000;
-        public static final int MenuButt_Options=0x7f0a0002;
-        public static final int MenuButt_Quit=0x7f0a0001;
-        public static final int MenuButt_Start=0x7f0a0003;
-        public static final int analogClock1=0x7f0a0011;
-        public static final int bResults=0x7f0a0014;
-        public static final int button1=0x7f0a0010;
-        public static final int editText1=0x7f0a0006;
-        public static final int editText2=0x7f0a0007;
-        public static final int editText3=0x7f0a0009;
-        public static final int editText4=0x7f0a000b;
-        public static final int editText5=0x7f0a000d;
-        public static final int editText6=0x7f0a000f;
-        public static final int etCommands=0x7f0a0013;
-        public static final int phonemenu_aboutus=0x7f0a0017;
-        public static final int phonemenu_exit=0x7f0a0019;
-        public static final int phonemenu_pref=0x7f0a0018;
-        public static final int tbPassword=0x7f0a0015;
-        public static final int textView1=0x7f0a0005;
-        public static final int textView2=0x7f0a0004;
-        public static final int textView3=0x7f0a0008;
-        public static final int textView4=0x7f0a000a;
-        public static final int textView5=0x7f0a000c;
-        public static final int textView6=0x7f0a000e;
-        public static final int tvPhoneMenu_AboutUsText=0x7f0a0012;
-        public static final int tvResults=0x7f0a0016;
+        public static final int phonemenu_aboutus=0x7f0a0001;
+        public static final int phonemenu_exit=0x7f0a0003;
+        public static final int phonemenu_pref=0x7f0a0002;
+        public static final int tvPhoneMenu_AboutUsText=0x7f0a0000;
     }
     public static final class layout {
-        public static final int activity_activity_core=0x7f030000;
-        public static final int email=0x7f030001;
-        public static final int menu_backg_sound=0x7f030002;
-        public static final int phone_menu_aboutus=0x7f030003;
-        public static final int text=0x7f030004;
+        public static final int menu_backg_sound=0x7f030000;
+        public static final int phone_menu_aboutus=0x7f030001;
     }
     public static final class menu {
         public static final int phone_menu=0x7f090000;
     }
     public static final class raw {
-        public static final int menu_sound=0x7f050000;
+        public static final int buttonclick=0x7f050000;
+        public static final int menu_sound=0x7f050001;
     }
     public static final class string {
         public static final int apiname=0x7f070004;
