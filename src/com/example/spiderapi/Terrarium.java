@@ -9,8 +9,8 @@ public class Terrarium
 {
 	private float fPosX = 0;
 	private float fPosY = 0;
-	private int X = 325;
-	private int Y = 521;
+	private int X = 400;
+	private int Y = 600;
 	
 	private Bitmap bitmap = null;
 	private SurfaceClass Surface = null;

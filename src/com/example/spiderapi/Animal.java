@@ -10,6 +10,8 @@ public class Animal
 	protected int ObjectID = 0;
 	protected int BitmapID = 0;
 	
+	protected int MovementFlag = 0;
+	
 	protected float fPosX = 50.0f;
 	protected float fPosY = 50.0f;
 	protected float fHeight = 0.0f;
@@ -28,6 +30,8 @@ public class Animal
 	
 	public void SetPosition(float posX, float posY) { fPosX = posX; fPosY = posY; }
 	
+	public void SetMovementFlag(int Flag) { MovementFlag = Flag; }
+	
 	public void OnDraw(Canvas canvas)
 	{	
 		Surface.OnDraw(canvas, bitmap, fPosX, fPosY);
@@ -42,4 +46,13 @@ public class Animal
 	{
 		
 	}
+	
+	public boolean IsOnPosition(float fOnTouchX, float fOnTouchY)
+	{
+		if( ( fOnTouchX > fPosX ) && ( fOnTouchX < fPosX + fWidth) && ( fOnTouchY > fPosY ) && ( fOnTouchY < fPosY + fHeight ) )	
+				return true;
+
+	    return false;
+	}	
 }
+

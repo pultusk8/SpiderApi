@@ -25,9 +25,15 @@ public class WormBox
 		this.bitmap = Surface.LoadBitmap(30, 0);
 		this.pTerrarium = pTerrarium;
 		fPosX = pTerrarium.GetX();
-		fPosY = pTerrarium.GetY();
+		fPosY = pTerrarium.GetY() - 100;
 		wormnumber[0] = new Worm(Surface, pTerrarium);
 		wormnumber[0].SetPosition(fPosX + 50, fPosY + 50);
+		
+		wormnumber[1] = new Worm(Surface, pTerrarium);
+		wormnumber[1].SetPosition(fPosX + 70, fPosY + 30);
+		
+		wormnumber[2] = new Worm(Surface, pTerrarium);
+		wormnumber[2].SetPosition(fPosX + 10, fPosY + 90);		
 	}
 	
 	public Worm GetWorm()

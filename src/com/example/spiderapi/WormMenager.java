@@ -57,7 +57,7 @@ public class WormMenager
 		{
 			if(WormNumber[i] != null)
 			{
-				if( ( fOnTouchX > WormNumber[i].GetX() ) && ( fOnTouchX < WormNumber[i].GetX() + WormNumber[i].GetW()) && ( fOnTouchY > WormNumber[i].GetY() ) && ( fOnTouchY < WormNumber[i].GetY() + WormNumber[i].GetH() ) )	
+				if(WormNumber[i].IsOnPosition(fOnTouchX, fOnTouchY))	
 					return WormNumber[i];	
 			}		
 		}	

@@ -27,13 +27,14 @@ public class Spider extends Animal
 	
 	//Pointers
 	Worm worm = null;	
-	
 	WormMenager WormMgr = null;
 	
 	public Spider(SurfaceClass Surface, Terrarium pTerrarium, WormMenager WormMgr)
 	{
 		this.Surface = Surface;	
 		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
+		fWidth = this.bitmap.getWidth();
+		fHeight = this.bitmap.getHeight();
 		this.pTerrarium = pTerrarium;
 		this.SetPosition(19,45);
 		fSpeed = 0.5f;
@@ -202,7 +203,9 @@ public class Spider extends Animal
     	}SluffTimer -= diff;	
 	
 		this.OnEatTime(diff);
-		this.OnMove(diff);
+		
+		if(MovementFlag == 0)
+			this.OnMove(diff);
 	}
 
 	@Override
@@ -210,5 +213,4 @@ public class Spider extends Animal
 	{
 		super.OnDraw(canvas);
 	}
-	
 }

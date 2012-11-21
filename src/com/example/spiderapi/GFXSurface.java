@@ -1,14 +1,11 @@
 package com.example.spiderapi;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -21,6 +18,13 @@ import android.view.View.OnTouchListener;
 public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Media Player for all items in apliaction
+	/*
+	 * DisplayMetrics displaymetrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+    int screenHeight = displaymetrics.heightPixels;
+    int screenWidth = displaymetrics.widthPixels;
+	 */
+	
 	
 	SurfaceClass Surface = null;
 	
@@ -38,11 +42,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 	//Save Load Variables
 	public static String filename = "SaveData";
 	SharedPreferences Data = null;
-	
-	
+
 	//OnTouch Actions
 	WormBox TouchedWormBox = null;
 	Worm TouchedWorm = null;
+	Spider TouchedSpider = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -74,16 +78,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		if(spider == null)
 			return;
-		
-		long TimeSaved = System.currentTimeMillis();
-		String SpiderName = "Spider";
 				
 		float X = spider.GetX();
 		float Y = spider.GetY();
 
 		SharedPreferences.Editor Editor = Data.edit();
-		Editor.putString("Name", SpiderName);
-		Editor.putLong("Time", TimeSaved);
 		Editor.putFloat("X", X);
 		Editor.putFloat("Y", Y);
 		
@@ -96,8 +95,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 			return;		
 		
 		Data = getSharedPreferences(filename, 0);
-		String LoadedString = Data.getString("Name", "no string at this key");
-		long LoadedTime = Data.getLong("Time", 0);
 		float x = Data.getFloat("X", 0);
 		float y = Data.getFloat("Y", 0);
 		spider.SetPosition(x, y);	
@@ -130,12 +127,21 @@ public class GFXSurface extends Activity implements OnTouchListener
 		if(TouchedWorm != null)
 			TouchedWorm.SetPosition(fOnTouchX, fOnTouchY);
 		
+		if(TouchedSpider != null)
+			TouchedSpider.SetPosition(fOnTouchX, fOnTouchY);		
+		
 		switch(event.getAction())
 		{
 			case MotionEvent.ACTION_DOWN:
 			{
 				TouchedWorm = WormMgr.GetWorm(fOnTouchX, fOnTouchY);
 					
+				if(spider.IsOnPosition(fOnTouchX, fOnTouchY))
+				{
+					TouchedSpider = spider;
+					TouchedSpider.SetMovementFlag(1);
+				}
+				
 				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
 					TouchedWorm = wormbox.GetWorm();
@@ -143,9 +149,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 				}
 				break;
 			}
+			
 			case MotionEvent.ACTION_UP:
 			{
 				TouchedWorm = null;
+				TouchedSpider = null;
+				spider.SetMovementFlag(0);
 				
 				if(CanGetMoveOrders)
 					spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
@@ -173,6 +182,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		public Bitmap LoadBitmap(int SpiderID, int BitmapID)
 		{
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+			
 			switch(SpiderID)
 			{
 				//Spider
@@ -284,9 +294,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
-		
-					//if(pTerrarium != null)
-						//pTerrarium.OnDraw(canvas);		
+					canvas.drawRGB(0, 0, 0);
+					
+					if(pTerrarium != null)
+						pTerrarium.OnDraw(canvas);		
 					
 					if(spider != null)	
 						spider.OnDraw(canvas);
