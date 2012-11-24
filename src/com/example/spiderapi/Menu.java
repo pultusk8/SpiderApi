@@ -15,7 +15,7 @@ import android.widget.ListView;
 //Main ProgrAM mENU
 public class Menu extends ListActivity
 {
-	String names[] = { "Nowa Gra"};
+	String names[] = { "Kontynuuj Grę", "Nowa Gra", "Ustawienia", "Wyjscie"};
 	
 	String classes[] = { "GFXSurface"};	
 	

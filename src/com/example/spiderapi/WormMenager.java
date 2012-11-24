@@ -42,6 +42,7 @@ public class WormMenager
 			{
 				if(WormNumber[i] == worm)
 				{
+					WormNumber[i].OnRemove();
 					WormNumber[i] = null;
 					return true;	
 				}		

@@ -24,17 +24,15 @@ public class GFXSurface extends Activity implements OnTouchListener
     int screenHeight = displaymetrics.heightPixels;
     int screenWidth = displaymetrics.widthPixels;
 	 */
-	
-	
-	SurfaceClass Surface = null;
-	
-	Terrarium pTerrarium = null;
-	Spider spider = null;
-	WormBox wormbox = null;
-	WormMenager WormMgr = null;
+
+	SurfaceClass Surface 	= null;
+	Terrarium pTerrarium 	= null;
+	Spider spider 			= null;
+	WormBox wormbox 		= null;
+	WormMenager WormMgr 	= null;
+	WakeLock wL 			= null;
 	
 	boolean CanGetMoveOrders = true;
-	WakeLock wL =  null;
 	
 	long StartTime, CurrentTime;
 	long LastCurrentTime;
@@ -51,15 +49,18 @@ public class GFXSurface extends Activity implements OnTouchListener
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
+		super.onCreate(savedInstanceState);
+		
 		//Timer
 		StartTime = CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
 		
-		super.onCreate(savedInstanceState);
+		//Create a surface
 		Surface = new SurfaceClass(this);
 		Surface.setOnTouchListener(this);
 		setContentView(Surface);
 		
+		//Initialize Objects
 		WormMgr = new WormMenager(Surface, pTerrarium);
 		pTerrarium = new Terrarium(Surface);
 		spider = new Spider(Surface, pTerrarium, WormMgr);
@@ -152,6 +153,15 @@ public class GFXSurface extends Activity implements OnTouchListener
 			
 			case MotionEvent.ACTION_UP:
 			{
+				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
+				{
+					if(TouchedWorm != null)
+					{
+						wormbox.AddWormToWormBox(TouchedWorm);
+						WormMgr.RemoveWorm(TouchedWorm);
+					}
+				}				
+				
 				TouchedWorm = null;
 				TouchedSpider = null;
 				spider.SetMovementFlag(0);

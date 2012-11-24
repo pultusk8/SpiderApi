@@ -37,6 +37,10 @@ public class Spider extends Animal
 		fHeight = this.bitmap.getHeight();
 		this.pTerrarium = pTerrarium;
 		this.SetPosition(19,45);
+		
+		
+		
+		
 		fSpeed = 0.5f;
 		
 		this.WormMgr = WormMgr;
@@ -59,7 +63,7 @@ public class Spider extends Animal
 		}
 		else
 		{
-			if(fPosX == worm.GetX() && fPosY == worm.GetY())
+			if(fPosX == worm.GetX()  && fPosY == worm.GetY())
 			{
 				WormMgr.RemoveWorm(worm);
 				HungryTimer = 8000;

@@ -6,9 +6,6 @@ import android.graphics.Canvas;
 
 public class Worm extends Animal
 {		
-	boolean IsDeath = false;
-	boolean IsMoving = false;
-	
 	public Worm(SurfaceClass Surface, Terrarium pTerrarium) 
 	{
 		fWidth = 20.0f;
@@ -22,10 +19,7 @@ public class Worm extends Animal
 
 	@Override
 	public void OnDraw(Canvas canvas) 
-	{
-		if(IsDeath)
-			return;
-		
+	{	
 		super.OnDraw(canvas);
 	}
 
@@ -39,6 +33,5 @@ public class Worm extends Animal
 	public void OnRemove()
 	{
 		super.OnRemove();
-		IsDeath = true;
 	}
 }
