@@ -8,16 +8,13 @@ public class WormMenager
 {
 	private SurfaceClass Surface = null;
 	private Terrarium pTerrarium = null;
-	private Worm WormNumber[] = { null,  null, null,  null, null };
-	private int MaxWormsInTerr = 5;
 	
-	WormMenager(SurfaceClass Surface, Terrarium pTerrarium) 
-	{
-		this.Surface = Surface;	
-		this.pTerrarium = pTerrarium;
-	}
+	private static Worm WormNumber[] = { null,  null, null,  null, null };
+	private static int MaxWormsInTerr = 5;
+	
+	WormMenager() {}
 
-	public boolean AddWorm(Worm worm/*null doda 1 robaka randomowo*/)
+	static public boolean AddWorm(Worm worm/*null doda 1 robaka randomowo*/)
 	{
 		if(worm != null)
 		{
@@ -34,7 +31,7 @@ public class WormMenager
 		return false;
 	}	
 	
-	public boolean RemoveWorm(Worm worm)
+	static public boolean RemoveWorm(Worm worm)
 	{
 		if(worm != null)
 		{
@@ -42,7 +39,7 @@ public class WormMenager
 			{
 				if(WormNumber[i] == worm)
 				{
-					WormNumber[i].OnRemove();
+					//WormNumber[i].OnRemove();
 					WormNumber[i] = null;
 					return true;	
 				}		
@@ -52,7 +49,7 @@ public class WormMenager
 		return false;		
 	}
 	
-	public Worm GetWorm(float fOnTouchX, float fOnTouchY)
+	static public Worm GetWorm(float fOnTouchX, float fOnTouchY)
 	{
 		for(int i=0; i<MaxWormsInTerr; ++i)
 		{
@@ -66,7 +63,7 @@ public class WormMenager
 	    return null;
 	}
 	
-	public Worm GetWorm()
+	static public Worm GetWorm()
 	{		
 		for(int i=0; i<MaxWormsInTerr; ++i)
 		{
@@ -78,7 +75,7 @@ public class WormMenager
 	    return null;
 	}		
 	
-	public void OnUpdate(long diff)
+	static public void OnUpdate(long diff)
 	{		
 		for(int i=0; i<MaxWormsInTerr; ++i)
 		{
@@ -89,7 +86,7 @@ public class WormMenager
 		}
 	}
 	
-	public void OnDraw(Canvas canvas) 
+	static public void OnDraw(Canvas canvas) 
 	{			
 		for(int i=0; i<MaxWormsInTerr; ++i)
 		{

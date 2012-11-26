@@ -11,8 +11,6 @@ public class Spider extends Animal
 	private int SluffLevel = 0;//wylinka ze slownika :D
 	private int SluffTimer = 10000;
 	
-	private int Health = 40;
-	
 	private int HungryLevel = 0;
 	private int HungryTimer = 5000; //when spider whant to eat	
 	
@@ -27,36 +25,44 @@ public class Spider extends Animal
 	
 	//Pointers
 	Worm worm = null;	
-	WormMenager WormMgr = null;
 	
-	public Spider(SurfaceClass Surface, Terrarium pTerrarium, WormMenager WormMgr)
+	public Spider(SurfaceClass Surface, Terrarium pTerrarium)
 	{
 		this.Surface = Surface;	
 		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
+		this.pTerrarium = pTerrarium;
+
+		this.OnCreate();
+	}	
+	
+	
+	@Override
+	protected void OnCreate() 
+	{
+		super.OnCreate();
+		//Initialize Variable
+		MovementFlag = 1; //super
+		fSpeed = 0.5f;
 		fWidth = this.bitmap.getWidth();
 		fHeight = this.bitmap.getHeight();
-		this.pTerrarium = pTerrarium;
 		this.SetPosition(19,45);
-		
-		
-		
-		
-		fSpeed = 0.5f;
-		
-		this.WormMgr = WormMgr;
-	}	
-		
+	}
+	
 	private void OnEatTime(long diff)
 	{
 		if(worm == null)
 		{
 	    	if(HungryTimer < diff)
 	    	{
-	    		worm = WormMgr.GetWorm();
+	    		worm = WormMenager.GetWorm();
 	    		if(worm != null)
 	    		{
 		    		fGoX = worm.GetX();
 		    		fGoY = worm.GetY();
+	    		}
+	    		else
+	    		{
+	    			Health--;
 	    		}
 	    		HungryTimer = 20000;
 	    	}HungryTimer -= diff;
@@ -65,9 +71,11 @@ public class Spider extends Animal
 		{
 			if(fPosX == worm.GetX()  && fPosY == worm.GetY())
 			{
-				WormMgr.RemoveWorm(worm);
-				HungryTimer = 8000;
+				//WormMgr.RemoveWorm(worm); //added support in worm struct
+				worm.OnRemove();
 				worm = null;
+				Health++;
+				HungryTimer = 8000;
 			}
 		}			
 	}
@@ -116,6 +124,12 @@ public class Spider extends Animal
 	
 	private void OnMove(long diff) 
 	{	
+		if(MovementFlag == 0)
+			return;
+		
+		if(MovementFlag == 3)
+			return;		
+		
 		if(worm == null)
 		{
 	    	if(RandomWaypointTimer < diff)
@@ -201,15 +215,21 @@ public class Spider extends Animal
 	{	
 		super.OnUpdate(diff);
 		
+		if(Health < -5)
+			return;
+			//Smierc :D
+		
+		if(Health <= 0)
+			HungryTimer = 2000;
+		
     	if(SluffTimer < diff)
     	{
     		GetNewSluff();
     	}SluffTimer -= diff;	
 	
 		this.OnEatTime(diff);
-		
-		if(MovementFlag == 0)
-			this.OnMove(diff);
+
+		this.OnMove(diff);
 	}
 
 	@Override

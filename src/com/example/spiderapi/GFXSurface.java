@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,19 +20,14 @@ import android.view.View.OnTouchListener;
 
 public class GFXSurface extends Activity implements OnTouchListener
 {
-	//Media Player for all items in apliaction
-	/*
-	 * DisplayMetrics displaymetrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-    int screenHeight = displaymetrics.heightPixels;
-    int screenWidth = displaymetrics.widthPixels;
-	 */
+	//Game Options
+    static int screenHeight;
+    static int screenWidth;	
 
 	SurfaceClass Surface 	= null;
 	Terrarium pTerrarium 	= null;
-	Spider spider 			= null;
+	static Spider spider    = null;
 	WormBox wormbox 		= null;
-	WormMenager WormMgr 	= null;
 	WakeLock wL 			= null;
 	
 	boolean CanGetMoveOrders = true;
@@ -51,6 +49,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		super.onCreate(savedInstanceState);
 		
+		//Initialize Game
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+	    screenHeight = displaymetrics.heightPixels;
+	    screenWidth = displaymetrics.widthPixels;		
+		
 		//Timer
 		StartTime = CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
@@ -61,9 +65,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 		setContentView(Surface);
 		
 		//Initialize Objects
-		WormMgr = new WormMenager(Surface, pTerrarium);
 		pTerrarium = new Terrarium(Surface);
-		spider = new Spider(Surface, pTerrarium, WormMgr);
+		spider = new Spider(Surface, pTerrarium);
 		wormbox = new WormBox(Surface, pTerrarium);
 
 		//wakelock
@@ -72,7 +75,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		wL.acquire();
 		
 		//save load 
-		Data = getSharedPreferences(filename, 0);
+		Data = getSharedPreferences(filename, 0);		
 	}
 
 	private void OnSave()
@@ -135,18 +138,18 @@ public class GFXSurface extends Activity implements OnTouchListener
 		{
 			case MotionEvent.ACTION_DOWN:
 			{
-				TouchedWorm = WormMgr.GetWorm(fOnTouchX, fOnTouchY);
+				TouchedWorm = WormMenager.GetWorm(fOnTouchX, fOnTouchY);
 					
 				if(spider.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
 					TouchedSpider = spider;
-					TouchedSpider.SetMovementFlag(1);
+					TouchedSpider.SetMovementFlag(3);
 				}
 				
 				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
 					TouchedWorm = wormbox.GetWorm();
-					WormMgr.AddWorm(TouchedWorm);
+					WormMenager.AddWorm(TouchedWorm);
 				}
 				break;
 			}
@@ -155,16 +158,21 @@ public class GFXSurface extends Activity implements OnTouchListener
 			{
 				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
+					if(wormbox.IsEmpty() && TouchedWorm == null)
+					{
+						//create new content activity with shop 
+					}
+					
 					if(TouchedWorm != null)
 					{
 						wormbox.AddWormToWormBox(TouchedWorm);
-						WormMgr.RemoveWorm(TouchedWorm);
+						WormMenager.RemoveWorm(TouchedWorm);
 					}
 				}				
 				
 				TouchedWorm = null;
 				TouchedSpider = null;
-				spider.SetMovementFlag(0);
+				spider.SetMovementFlag(1);
 				
 				if(CanGetMoveOrders)
 					spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
@@ -186,6 +194,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 	
 		public void OnDraw(Canvas canvas,Bitmap bitmap,float fPosX, float fPosY)
 		{
+			if(bitmap == null || canvas == null)
+				return;
+			
 			canvas.drawBitmap(bitmap, fPosX, fPosY, null);
 		}		
 		
@@ -242,6 +253,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 					switch(BitmapID)
 					{
 						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wormbox01); break;
+						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wormbox01addworm); break;
+						
 						default: break;
 					}
 					break;					
@@ -315,9 +328,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 					if(wormbox != null)
 						wormbox.OnDraw(canvas);
 					
-					if(WormMgr != null)
-						WormMgr.OnDraw(canvas);
+					WormMenager.OnDraw(canvas);
 					
+					MsgMenager.OnDraw(canvas);
+								
 					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
 				
@@ -339,6 +353,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					if(wormbox != null)
 						wormbox.OnUpdate(TimeDiff);
+					
+					MsgMenager.OnUpdate();
 				}						
 			}
 		}

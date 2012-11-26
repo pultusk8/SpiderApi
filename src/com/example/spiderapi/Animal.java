@@ -14,16 +14,20 @@ enum MovementFlag
 {
 	UNIT_MOVE_NOTMOVING, // 0x0002
 	UNIT_MOVE_MOVING,    // 0x0020	
+	UNIT_MOVE_MOVEDBYUSER// 0x0200
 }
 
 public class Animal 
 {	
+	//Graphics
 	protected int ObjectID = 0;
 	protected int BitmapID = 0;
 	
+	//Flags
 	protected int MovementFlag = 0;
 	protected int UnitFlag = 0;
 	
+	//Positions
 	protected float fPosX = 50.0f;
 	protected float fPosY = 50.0f;
 	protected float fHeight = 0.0f;
@@ -31,6 +35,9 @@ public class Animal
 	protected float fSpeed = 0.0f;
 	protected float fOrientation = 0.0f;
 	protected float fRadius = 0.0f;
+	
+	//Social
+	protected int Health = 5;
 	
 	protected Bitmap bitmap = null;
 	protected SurfaceClass Surface = null;
@@ -41,9 +48,16 @@ public class Animal
 	public float GetW() { return fWidth; }
 	public float GetH() { return fHeight; }
 	
+	public int GetHealth() { return Health; }
+	
 	public void SetPosition(float posX, float posY) { fPosX = posX; fPosY = posY; }
 	
 	public void SetMovementFlag(int Flag) { MovementFlag = Flag; }
+	
+	protected void OnCreate()
+	{
+		
+	}
 	
 	public void OnDraw(Canvas canvas)
 	{	

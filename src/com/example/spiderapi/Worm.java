@@ -15,6 +15,14 @@ public class Worm extends Animal
 		this.Surface = Surface;	
 		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
 		this.pTerrarium = pTerrarium;
+			
+	}
+
+	@Override
+	protected void OnCreate() 
+	{
+		super.OnCreate();
+		WormMenager.AddWorm(this);
 	}
 
 	@Override
@@ -33,5 +41,6 @@ public class Worm extends Animal
 	public void OnRemove()
 	{
 		super.OnRemove();
+		WormMenager.RemoveWorm(this); //added support in worm struct
 	}
 }
