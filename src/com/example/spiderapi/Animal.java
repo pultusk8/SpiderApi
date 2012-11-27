@@ -56,7 +56,9 @@ public class Animal
 	
 	protected void OnCreate()
 	{
-		
+		this.Surface = GFXSurface.GetSurface();
+		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);	
+		this.pTerrarium =  GFXSurface.GetTerrarium();
 	}
 	
 	public void OnDraw(Canvas canvas)
@@ -64,7 +66,8 @@ public class Animal
 		if(UnitFlag == 1)
 			return;
 		
-		Surface.OnDraw(canvas, bitmap, fPosX-(bitmap.getWidth()/2), fPosY-(bitmap.getHeight()/2));
+		if(bitmap != null)
+			Surface.OnDraw(canvas, bitmap, fPosX-(bitmap.getWidth()/2), fPosY-(bitmap.getHeight()/2));
 	}
 	
 	public void OnUpdate(long diff)
@@ -94,6 +97,19 @@ public class Animal
 	{
 		return false;
 	}
+		
+	private double GetDistance(float x1, float y1, float x2, float y2 )
+	{ 
+	    return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)); 	
+	}	
+	
+	public boolean IsInRange(Spider spider) 
+	{
+		if(GetDistance(fPosX, fPosY, spider.GetX(),  spider.GetY()) < fRadius + spider.fRadius)
+			return true;
+	
+		return false;
+	}	
 }
 
 

@@ -1,27 +1,30 @@
 package com.example.spiderapi;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 import android.graphics.Canvas;
 
 public class Worm extends Animal
 {		
-	public Worm(SurfaceClass Surface, Terrarium pTerrarium) 
+	private boolean IsInWormBox = false;
+
+	public Worm() 
 	{
-		fWidth = 20.0f;
-		fHeight = 20.0f;
-		ObjectID = 10;
-		BitmapID = 0;
-		this.Surface = Surface;	
-		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
-		this.pTerrarium = pTerrarium;
-			
+		this.OnCreate();
 	}
 
 	@Override
 	protected void OnCreate() 
 	{
+		ObjectID = 10;
+		BitmapID = 0;	
+		
 		super.OnCreate();
+
+		fWidth = 20.0f;
+		fHeight = 20.0f;
+		
+		fPosX = WormBox.GetX() + 14;
+		fPosY = WormBox.GetY() + 53;
+
 		WormMenager.AddWorm(this);
 	}
 
@@ -41,6 +44,16 @@ public class Worm extends Animal
 	public void OnRemove()
 	{
 		super.OnRemove();
-		WormMenager.RemoveWorm(this); //added support in worm struct
+		WormMenager.RemoveWorm(this);
+	}
+
+	public boolean IsInWormBox() 
+	{
+		return IsInWormBox;
+	}
+
+	public void SetIsInWormBox(boolean b) 
+	{
+		IsInWormBox = b;
 	}
 }

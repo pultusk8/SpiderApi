@@ -4,14 +4,12 @@ import java.util.Random;
 
 import android.graphics.Canvas;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 public class Spider extends Animal
 {	
 	private int SluffLevel = 0;//wylinka ze slownika :D
 	private int SluffTimer = 10000;
 	
-	private int HungryLevel = 0;
+	//private int HungryLevel = 0;
 	private int HungryTimer = 5000; //when spider whant to eat	
 	
 	//Moving Variables
@@ -26,21 +24,17 @@ public class Spider extends Animal
 	//Pointers
 	Worm worm = null;	
 	
-	public Spider(SurfaceClass Surface, Terrarium pTerrarium)
+	public Spider()
 	{
-		this.Surface = Surface;	
-		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);
-		this.pTerrarium = pTerrarium;
-
 		this.OnCreate();
 	}	
-	
 	
 	@Override
 	protected void OnCreate() 
 	{
 		super.OnCreate();
 		//Initialize Variable
+		fRadius = 10.0f;
 		MovementFlag = 1; //super
 		fSpeed = 0.5f;
 		fWidth = this.bitmap.getWidth();
@@ -54,8 +48,8 @@ public class Spider extends Animal
 		{
 	    	if(HungryTimer < diff)
 	    	{
-	    		worm = WormMenager.GetWorm();
-	    		if(worm != null)
+	    		worm = WormMenager.GetRandomWorm();
+	    		if(worm != null && !worm.IsInWormBox())
 	    		{
 		    		fGoX = worm.GetX();
 		    		fGoY = worm.GetY();
@@ -69,7 +63,7 @@ public class Spider extends Animal
 		}
 		else
 		{
-			if(fPosX == worm.GetX()  && fPosY == worm.GetY())
+			if(worm.IsInRange(this))
 			{
 				//WormMgr.RemoveWorm(worm); //added support in worm struct
 				worm.OnRemove();

@@ -1,7 +1,5 @@
 package com.example.spiderapi;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -13,15 +11,13 @@ public class Terrarium
 	private int Y = 600;
 	
 	private Bitmap bitmap = null;
-	private SurfaceClass Surface = null;
-	
+
 	private int TerrariumID = 20;
 	private int TerrBitmapID = 0;
 	
-	public Terrarium(SurfaceClass Surface)
+	public Terrarium()
 	{
-		this.Surface = Surface;	
-		this.bitmap = Surface.LoadBitmap(TerrariumID, TerrBitmapID);
+		this.bitmap = GFXSurface.GetSurface().LoadBitmap(TerrariumID, TerrBitmapID);
 		Y = bitmap.getHeight();
 		X = bitmap.getWidth();
 	}	
@@ -31,6 +27,6 @@ public class Terrarium
 	
 	public void OnDraw(Canvas canvas)
 	{
-		Surface.OnDraw(canvas, bitmap, fPosX, fPosY);
+		GFXSurface.GetSurface().OnDraw(canvas, bitmap, fPosX, fPosY);
 	}
 }

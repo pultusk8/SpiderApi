@@ -10,7 +10,7 @@ public class MsgMenager
 	static private String Y = "";
 	static private String Z = "";
 
-	static public void OnUpdate()
+	static public void OnUpdate(long timeDiff)
 	{
 		if(GFXSurface.spider != null)
 		{
@@ -28,9 +28,9 @@ public class MsgMenager
 		paint.setTextSize(20); 
 		
 		String temp1 = "Spider Health: " + Z;
-		canvas.drawText(temp1, 20, 575, paint);		
+		canvas.drawText(temp1, 20, 375, paint);		
 		
 		String temp = "Spider Position: " + X + ":" + Y;
-		canvas.drawText(temp, 20, 600, paint);
+		canvas.drawText(temp, 20, 300, paint);
 	}
 }

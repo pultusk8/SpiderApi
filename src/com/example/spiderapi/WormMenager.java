@@ -2,17 +2,15 @@ package com.example.spiderapi;
 
 import android.graphics.Canvas;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 public class WormMenager 
 {
-	private SurfaceClass Surface = null;
-	private Terrarium pTerrarium = null;
-	
-	private static Worm WormNumber[] = { null,  null, null,  null, null };
-	private static int MaxWormsInTerr = 5;
-	
-	WormMenager() {}
+	static Worm WormNumber[] = { null, null, null, null, null, null, null, null, null, null };
+	static int MaxWormsInTerr = 10;
+		
+	static public void OnCreate()
+	{
+		
+	}
 
 	static public boolean AddWorm(Worm worm/*null doda 1 robaka randomowo*/)
 	{
@@ -63,7 +61,7 @@ public class WormMenager
 	    return null;
 	}
 	
-	static public Worm GetWorm()
+	static public Worm GetRandomWorm()
 	{		
 		for(int i=0; i<MaxWormsInTerr; ++i)
 		{
@@ -73,7 +71,10 @@ public class WormMenager
 			}		
 		}	
 	    return null;
-	}		
+	}	
+	
+	static public int GetWormsNumber() { return MaxWormsInTerr; }
+	static public Worm GetWormOnListPosition(int i) { return WormNumber[i]; }
 	
 	static public void OnUpdate(long diff)
 	{		

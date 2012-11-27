@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -24,10 +22,10 @@ public class GFXSurface extends Activity implements OnTouchListener
     static int screenHeight;
     static int screenWidth;	
 
-	SurfaceClass Surface 	= null;
-	Terrarium pTerrarium 	= null;
+	static SurfaceClass Surface 	= null;
+	static Terrarium pTerrarium 	= null;
+	
 	static Spider spider    = null;
-	WormBox wormbox 		= null;
 	WakeLock wL 			= null;
 	
 	boolean CanGetMoveOrders = true;
@@ -40,7 +38,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 	SharedPreferences Data = null;
 
 	//OnTouch Actions
-	WormBox TouchedWormBox = null;
+	boolean IsWormBoxTaken = false;
 	Worm TouchedWorm = null;
 	Spider TouchedSpider = null;
 	
@@ -48,6 +46,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		
+		//Initialize AnimalMenager
+		WormMenager.OnCreate();
+		
 		
 		//Initialize Game
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -65,9 +67,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 		setContentView(Surface);
 		
 		//Initialize Objects
-		pTerrarium = new Terrarium(Surface);
-		spider = new Spider(Surface, pTerrarium);
-		wormbox = new WormBox(Surface, pTerrarium);
+		pTerrarium = new Terrarium();
+		spider = new Spider();
+		WormBox.OnCreate();
 
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -75,7 +77,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 		wL.acquire();
 		
 		//save load 
-		Data = getSharedPreferences(filename, 0);		
+		Data = getSharedPreferences(filename, 0);	
+		
+		
 	}
 
 	private void OnSave()
@@ -132,44 +136,53 @@ public class GFXSurface extends Activity implements OnTouchListener
 			TouchedWorm.SetPosition(fOnTouchX, fOnTouchY);
 		
 		if(TouchedSpider != null)
-			TouchedSpider.SetPosition(fOnTouchX, fOnTouchY);		
+			TouchedSpider.SetPosition(fOnTouchX, fOnTouchY);
+		
+		if(IsWormBoxTaken)
+			WormBox.SetPosition(fOnTouchX, fOnTouchY);
 		
 		switch(event.getAction())
 		{
 			case MotionEvent.ACTION_DOWN:
 			{
 				TouchedWorm = WormMenager.GetWorm(fOnTouchX, fOnTouchY);
-					
-				if(spider.IsOnPosition(fOnTouchX, fOnTouchY))
+				
+				if(TouchedWorm != null)
+				{
+					TouchedWorm.SetIsInWormBox(false);
+				}
+				
+				if(spider.IsOnPosition(fOnTouchX, fOnTouchY) && TouchedWorm == null)
 				{
 					TouchedSpider = spider;
 					TouchedSpider.SetMovementFlag(3);
 				}
 				
-				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
-				{
-					TouchedWorm = wormbox.GetWorm();
-					WormMenager.AddWorm(TouchedWorm);
-				}
+				//if(TouchedSpider == null &&  TouchedWorm == null)
+					//if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
+						//IsWormBoxTaken = true;
+				
 				break;
 			}
 			
 			case MotionEvent.ACTION_UP:
 			{
-				if(wormbox.IsOnPosition(fOnTouchX, fOnTouchY))
+				if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
-					if(wormbox.IsEmpty() && TouchedWorm == null)
+					if(WormBox.IsEmpty() && TouchedWorm == null)
 					{
 						//create new content activity with shop 
+						Worm worm = new Worm();
+						worm.SetIsInWormBox(true);
 					}
 					
 					if(TouchedWorm != null)
 					{
-						wormbox.AddWormToWormBox(TouchedWorm);
-						WormMenager.RemoveWorm(TouchedWorm);
+						TouchedWorm.SetIsInWormBox(true);				
 					}
 				}				
 				
+				IsWormBoxTaken = false;
 				TouchedWorm = null;
 				TouchedSpider = null;
 				spider.SetMovementFlag(1);
@@ -184,6 +197,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 
 		return true;
 	}
+	
+	static public SurfaceClass GetSurface() { return Surface; }
+	public static Terrarium GetTerrarium() { return pTerrarium; }
 	
 	public class SurfaceClass extends SurfaceView implements Runnable
 	{
@@ -325,8 +341,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 					if(spider != null)	
 						spider.OnDraw(canvas);
 							
-					if(wormbox != null)
-						wormbox.OnDraw(canvas);
+					WormBox.OnDraw(canvas);
 					
 					WormMenager.OnDraw(canvas);
 					
@@ -351,10 +366,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 					if(spider != null)		
 						spider.OnUpdate(TimeDiff);
 					
-					if(wormbox != null)
-						wormbox.OnUpdate(TimeDiff);
+					WormBox.OnUpdate(TimeDiff);
 					
-					MsgMenager.OnUpdate();
+					WormMenager.OnUpdate(TimeDiff);
+					
+					MsgMenager.OnUpdate(TimeDiff);
 				}						
 			}
 		}
