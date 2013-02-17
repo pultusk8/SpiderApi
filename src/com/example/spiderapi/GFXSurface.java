@@ -1,15 +1,18 @@
 package com.example.spiderapi;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -42,6 +45,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 	Worm TouchedWorm = null;
 	Spider TouchedSpider = null;
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -52,10 +56,18 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		
 		//Initialize Game
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		MsgMenager.AddMssage(0, width);
+		MsgMenager.AddMssage(1, height);
+		/*
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 	    getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 	    screenHeight = displaymetrics.heightPixels;
-	    screenWidth = displaymetrics.widthPixels;		
+	    screenWidth = displaymetrics.widthPixels;	*/	
 		
 		//Timer
 		StartTime = CurrentTime = LastCurrentTime = 0;
@@ -334,9 +346,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 				CurrentTime = System.currentTimeMillis();	
 				long TimeDiff = CurrentTime - LastCurrentTime;
 				LastCurrentTime = CurrentTime;
-				
-		
-				
+						
 				if(currentthread == ThreadOne)
 				{	
 					if(!surfHolder.getSurface().isValid())
@@ -357,15 +367,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 					WormMenager.OnDraw(canvas);
 					
 					MsgMenager.OnDraw(canvas);
-						
+					
+					/*
 			    	if(fpstimer < TimeDiff)
 			    	{
-			    		MsgMenager.AddMssage(1,fpscounter);
+			    		//MsgMenager.AddMssage(1,fpscounter);
 			    		fpstimer = 1000;
 			    		fpscounter = 0;
 			    	}fpstimer -= TimeDiff;
 					
-			    	++fpscounter;					
+			    	++fpscounter;	*/				
 					
 					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
@@ -378,7 +389,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 					{
 						float FrameRate = 60;
 						float PauseTime = 1000 / FrameRate;
-						MsgMenager.AddMssage(0,(int) PauseTime);
+						//MsgMenager.AddMssage(0,(int) PauseTime);
 						Thread.sleep((long) PauseTime);	
 					} 
 					catch (InterruptedException e) 

@@ -23,9 +23,9 @@ public class Animal
 	protected int ObjectID = 0;
 	protected int BitmapID = 0;
 	protected int AnimationCurrentState = 0;
-	protected int AnimationMaxState = 8; // max bitmaps of animation
+	protected int AnimationMaxState = 7; // max bitmaps of animation
 	protected int AnimationTimer = 1000;
-	protected static int AnimationNextTimer = 1000; // time between animation change
+	protected int AnimationNextTimer = 1000; // time between animation change
 	
 	//Flags
 	protected int MovementFlag = 0;
@@ -100,10 +100,11 @@ public class Animal
 		//this.bitmap = Surface.LoadBitmap(ObjectID, AnimationCurrentState);	
 		if(AnimationTimer < diff)			
 		{
+			++AnimationCurrentState;
+			
 			if(AnimationCurrentState > AnimationMaxState)
 				AnimationCurrentState = 0;
 			
-			++AnimationCurrentState;
 			AnimationTimer = AnimationNextTimer;
 		}AnimationTimer -= diff;
 	}
