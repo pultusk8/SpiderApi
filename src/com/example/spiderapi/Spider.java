@@ -2,6 +2,7 @@ package com.example.spiderapi;
 
 import java.util.Random;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 public class Spider extends Animal
@@ -15,7 +16,7 @@ public class Spider extends Animal
 	//Moving Variables
 	private float fGoX = 50.0f;
 	private float fGoY = 50.0f;
-	private float fGoZ = 0.0f;
+	//private float fGoZ = 0.0f;
 	
 	private float vectorX, vectorY, fNewX, fNewY;	
 			
@@ -23,6 +24,9 @@ public class Spider extends Animal
 	
 	//Pointers
 	Worm worm = null;	
+	
+	//test
+	protected Bitmap bitmaptable[] = { null, null, null, null, null, null, null, null };
 	
 	public Spider()
 	{
@@ -40,6 +44,11 @@ public class Spider extends Animal
 		fWidth = this.bitmap.getWidth();
 		fHeight = this.bitmap.getHeight();
 		this.SetPosition(19,45);
+		
+		for(int i =0; i<8; ++i)
+		{
+			bitmaptable[i] = Surface.LoadBitmap(ObjectID, i);
+		}
 	}
 	
 	private void OnEatTime(long diff)
@@ -102,18 +111,20 @@ public class Spider extends Animal
 	    }		
 		
 		fGoX = (randomX - (randomX - TerrX)) * vectorX;
-		if(fGoX < 0) 
-			RandomWaypoint();
+		if(fGoX < 0) fGoX = 0;
+			//RandomWaypoint();
 			//fGoX = (randomX - (randomX - TerrX)) * 1;
-		if(fGoX > TerrX) 
-			RandomWaypoint();
+		if(fGoX > TerrX) fGoX = 0;
+			//RandomWaypoint();
 			//fGoX = TerrX;
+			
 		fGoY = (randomY - (randomY - TerrY)) * vectorY;
-		if(fGoY < 0) 
+		
+		if(fGoY < 0) fGoY = 0;
 			//fGoY = (randomY - (randomY - TerrY)) * 1;
-			RandomWaypoint();
-		if(fGoY > TerrY)
-			RandomWaypoint();
+			//RandomWaypoint();
+		if(fGoY > TerrY) fGoY = 0; 
+			//RandomWaypoint();
 	}
 	
 	private void OnMove(long diff) 
@@ -124,21 +135,24 @@ public class Spider extends Animal
 		if(MovementFlag == 3)
 			return;		
 		
+		/*
 		if(worm == null)
 		{
 	    	if(RandomWaypointTimer < diff)
 	    	{
 	    		RandomWaypoint();
-	    		RandomWaypointTimer = 2000;
+	    		RandomWaypointTimer = 10000;
 	    	}RandomWaypointTimer -= diff;	
 		}
+		*/
 		
 	    if(fPosX == fGoX && fPosY == fGoY)
 	    {	
-	        //StopMove(); 
+	        //StopMove();
+	    	//set flag not moving
 	        return;
 	    }
-
+ 
 	    vectorX = vectorY = fNewX = fNewY = 0.0f;
 
 	    MoveDirection Move = null;
@@ -160,6 +174,12 @@ public class Spider extends Animal
 	    if(fPosX > fGoX && fPosY == fGoY)
 	    	Move = MoveDirection.Left;	    
 	        
+	    //Prepare orientation
+	    //ChangeOrientationDueToWaypoint();
+	    
+	    if(!CheckOrientation(Move))     	
+	    	return;   
+	    
 	    if(Move != null)
 	    {
 			switch(Move)
@@ -188,12 +208,36 @@ public class Spider extends Animal
         fPosX = fNewX; 
         fPosY = fNewY;	        
 	}
-		
+	
+    boolean CheckOrientation(MoveDirection MoveDir)
+    {
+    	if(fOrientation /*moveDirection*/ == MoveDir.ordinal())
+    		return true;
+    	
+    	//int a = moveDirection.ordinal();
+    	int b = MoveDir.ordinal();
+    	int c = 0;
+    	if(fOrientation > b)
+    	{
+    		c = (int) (fOrientation - b);
+    	}
+    	else
+    		c = (int) (b - fOrientation);
+    	
+    	if(c < 4)
+    		++fOrientation;
+    	else
+    		--fOrientation;
+    	  	//odejmowac wieksza od mniejszej ?	
+    		
+    	return false;
+    }	
+	
 	public void SetUpWaypoint(float GoX, float GoY, float GoZ)
 	{		
 		fGoX = GoX;
 		fGoY = GoY;
-		fGoZ = GoZ;
+		//fGoZ = GoZ;
 		worm = null;
 	}
 		
@@ -223,12 +267,16 @@ public class Spider extends Animal
 	
 		this.OnEatTime(diff);
 
+		//Move and animations calculation Methods
 		this.OnMove(diff);
+		this.OnAnimate(diff);
 	}
 
 	@Override
 	public void OnDraw(Canvas canvas) 
 	{
-		super.OnDraw(canvas);
+		//super.OnDraw(canvas);
+		if(bitmaptable[AnimationCurrentState] != null)
+			Surface.OnDraw(canvas, bitmaptable[AnimationCurrentState], fPosX-(bitmap.getWidth()/2), fPosY-(bitmap.getHeight()/2));
 	}
 }

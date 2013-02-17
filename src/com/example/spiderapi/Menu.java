@@ -48,7 +48,7 @@ public class Menu extends ListActivity
 		//starting activity
 		try
 		{
-			Class tempClass = Class.forName("com.example.spiderapi." + strString);
+			Class<?> tempClass = Class.forName("com.example.spiderapi." + strString);
 			Intent tempIntent = new Intent(Menu.this, tempClass);
 			startActivity(tempIntent);
 		}

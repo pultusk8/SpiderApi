@@ -7,8 +7,8 @@ import com.example.spiderapi.GFXSurface.SurfaceClass;
 
 public class WormBox 
 {
-	private static float fPosX = 300;
-	private static float fPosY = 450;
+	private static float fPosX = 500;
+	private static float fPosY = 850;
 	private static float fHeight = 100;
 	private static float fWidth = 100;
 

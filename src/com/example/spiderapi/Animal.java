@@ -22,6 +22,7 @@ public class Animal
 	//Graphics
 	protected int ObjectID = 0;
 	protected int BitmapID = 0;
+	protected int AnimationCurrentState = 0;
 	
 	//Flags
 	protected int MovementFlag = 0;
@@ -34,7 +35,22 @@ public class Animal
 	protected float fWidth = 0.0f;
 	protected float fSpeed = 0.0f;
 	protected float fOrientation = 0.0f;
+	protected MoveDirection moveDirection = MoveDirection.Down;
+	//Orientation Explain
+	/*
+	 0 up
+	 1 up right
+	 2 right
+	 3 down right
+	 4 down
+	 5 down left
+	 6 left
+	 7 left up 
+	 */
 	protected float fRadius = 0.0f;
+	
+	//Movement and Animations
+	
 	
 	//Social
 	protected int Health = 5;
@@ -72,8 +88,18 @@ public class Animal
 	
 	public void OnUpdate(long diff)
 	{	
-		
+		OnAnimate(diff);
 	}	
+	
+	public void OnAnimate(long diff)
+	{
+		//BitmapID
+		//this.bitmap = Surface.LoadBitmap(ObjectID, AnimationCurrentState);	
+		++AnimationCurrentState;
+		
+		if(AnimationCurrentState > 7)
+			AnimationCurrentState = 0;
+	}
 	
 	public void OnRemove()	
 	{

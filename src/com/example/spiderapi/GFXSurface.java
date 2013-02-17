@@ -227,8 +227,14 @@ public class GFXSurface extends Activity implements OnTouchListener
 				{
 					switch(BitmapID)
 					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
-						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider02); break;
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
+						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
+						case 2: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
+						case 3: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
+						case 4: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
+						case 5: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
+						case 6: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
+						case 7: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
 						default: break;
 					}
 					break;
@@ -319,18 +325,23 @@ public class GFXSurface extends Activity implements OnTouchListener
 			Thread currentthread = Thread.currentThread();
 			if(currentthread == null)
 				return;
-						
+				
+			int fpscounter = 0;
+			int fpstimer = 100;
+			
 			while(IsRunning)
-			{		
+			{	
 				CurrentTime = System.currentTimeMillis();	
 				long TimeDiff = CurrentTime - LastCurrentTime;
 				LastCurrentTime = CurrentTime;
-								
+				
+		
+				
 				if(currentthread == ThreadOne)
 				{	
 					if(!surfHolder.getSurface().isValid())
 						continue;
-					
+		    	
 					//draw background
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(0, 0, 0);
@@ -346,17 +357,29 @@ public class GFXSurface extends Activity implements OnTouchListener
 					WormMenager.OnDraw(canvas);
 					
 					MsgMenager.OnDraw(canvas);
-								
+						
+			    	if(fpstimer < TimeDiff)
+			    	{
+			    		MsgMenager.AddMssage(1,fpscounter);
+			    		fpstimer = 1000;
+			    		fpscounter = 0;
+			    	}fpstimer -= TimeDiff;
+					
+			    	++fpscounter;					
+					
 					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
 				
 				if(currentthread == ThreadTwo)
-				{				
+				{		
+					MsgMenager.OnUpdate(TimeDiff);
+					
 					try
 					{
 						float FrameRate = 60;
 						float PauseTime = 1000 / FrameRate;
-						Thread.sleep((long) PauseTime);
+						MsgMenager.AddMssage(0,(int) PauseTime);
+						Thread.sleep((long) PauseTime);	
 					} 
 					catch (InterruptedException e) 
 					{
@@ -369,8 +392,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 					WormBox.OnUpdate(TimeDiff);
 					
 					WormMenager.OnUpdate(TimeDiff);
-					
-					MsgMenager.OnUpdate(TimeDiff);
 				}						
 			}
 		}
