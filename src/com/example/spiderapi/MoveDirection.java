@@ -2,12 +2,12 @@ package com.example.spiderapi;
 
 public enum MoveDirection 
 {
+	Up,
+	UpRight,
 	Right,
-    UpRight,
+	DownRight,
+	Down,
+	DownLeft,
     Left,
-    UpLeft,
-    Down,
-    DownRight,
-    DownLeft,
-    Up,
+    UpLeft,  
 }
