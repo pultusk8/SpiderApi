@@ -23,8 +23,8 @@ public class MsgMenager
 	{
 		if(GFXSurface.spider != null)
 		{
-			X = "" + GFXSurface.spider.GetX();
-			Y = "" + GFXSurface.spider.GetY();
+			X = "" + (int)GFXSurface.spider.GetX();
+			Y = "" + (int)GFXSurface.spider.GetY();
 			Z = "" + GFXSurface.spider.GetHealth();
 		}
 	}

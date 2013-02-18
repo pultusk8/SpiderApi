@@ -7,27 +7,30 @@ import android.graphics.Canvas;
 
 public class Spider extends Animal
 {	
+	//Graphics
+	private Bitmap bmpBitmapTable[][] = {   { null, null, null, null, null, null, null, null, }, 
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+											{ null, null, null, null, null, null, null, null, },
+										};
+
 	private int SluffLevel = 0;//wylinka ze slownika :D
 	private int SluffTimer = 10000;
-	
-	//private int HungryLevel = 0;
-	private int HungryTimer = 5000; //when spider whant to eat	
-	
+
 	//Moving Variables
-	private float fGoX = 50.0f;
-	private float fGoY = 50.0f;
+
 	//private float fGoZ = 0.0f;
 	
 	private float vectorX, vectorY, fNewX, fNewY;	
-			
 	private int RandomWaypointTimer = 5000;
 	
 	//Pointers
-	Worm worm = null;	
-	
-	//test
-	protected Bitmap bitmaptable[] = { null, null, null, null, null, null, null, null };
-	
+	private Worm worm = null;	
+		
 	public Spider()
 	{
 		this.OnCreate();
@@ -37,6 +40,9 @@ public class Spider extends Animal
 	protected void OnCreate() 
 	{
 		super.OnCreate();
+
+		ObjectID = 0;
+		
 		//Initialize Variable
 		fRadius = 10.0f;
 		MovementFlag = 1; //super
@@ -44,14 +50,25 @@ public class Spider extends Animal
 
 		this.SetPosition(100,100);
 		
-		for(int i=0; i<8; ++i)
-		{
-			bitmaptable[i] = Surface.LoadBitmap(ObjectID, i);
-			bitmaptable[i] = Bitmap.createScaledBitmap(bitmaptable[i], 150, 150, true);
-		}
+		bmpBitmapTable[0][0] = GFXSurface.GetSurface().LoadBitmap(ObjectID, 0, 0);
 		
-		fWidth = this.bitmaptable[1].getWidth();
-		fHeight = this.bitmaptable[1].getHeight();
+		//Load Bitmaps
+		for(int x=0; x<MaxAnimationsDirection; ++x)
+		{
+			for(int i=0; i<MaxAnimationFrames; ++i)
+			{		
+				
+				bmpBitmapTable[x][i] = bmpBitmapTable[0][0];
+				bmpBitmapTable[x][i] = Bitmap.createScaledBitmap(bmpBitmapTable[x][i], 150, 150, true);
+				/*
+				bmpBitmapTable[x][i] = GFXSurface.GetSurface().LoadBitmap(ObjectID, x, i);
+				bmpBitmapTable[x][i] = Bitmap.createScaledBitmap(bmpBitmapTable[x][i], 150, 150, true);
+				*/
+			}
+		}
+
+		fWidth = this.bmpBitmapTable[0][0].getWidth();
+		fHeight = this.bmpBitmapTable[0][0].getHeight();
 	}
 	
 	private void OnEatTime(long diff)
@@ -89,8 +106,8 @@ public class Spider extends Animal
 	private void RandomWaypoint()
 	{
 		int TerrX, TerrY;
-		TerrX = pTerrarium.GetWidth();
-		TerrY = pTerrarium.GetHeight();
+		//TerrX = pTerrarium.GetWidth();
+		//TerrY = pTerrarium.GetHeight();
 			
 		long random = System.currentTimeMillis();
 		
@@ -113,20 +130,20 @@ public class Spider extends Animal
 	        default: break;
 	    }		
 		
-		fGoX = (randomX - (randomX - TerrX)) * vectorX;
+		//fGoX = (randomX - (randomX - TerrX)) * vectorX;
 		if(fGoX < 0) fGoX = 0;
 			//RandomWaypoint();
 			//fGoX = (randomX - (randomX - TerrX)) * 1;
-		if(fGoX > TerrX) fGoX = 0;
+		//if(fGoX > TerrX) fGoX = 0;
 			//RandomWaypoint();
 			//fGoX = TerrX;
 			
-		fGoY = (randomY - (randomY - TerrY)) * vectorY;
+		//fGoY = (randomY - (randomY - TerrY)) * vectorY;
 		
 		if(fGoY < 0) fGoY = 0;
 			//fGoY = (randomY - (randomY - TerrY)) * 1;
 			//RandomWaypoint();
-		if(fGoY > TerrY) fGoY = 0; 
+		//if(fGoY > TerrY) fGoY = 0; 
 			//RandomWaypoint();
 	}
 	
@@ -214,25 +231,34 @@ public class Spider extends Animal
 	
     boolean CheckOrientation(MoveDirection MoveDir)
     {
-    	if(fOrientation /*moveDirection*/ == MoveDir.ordinal())
+    	if(Orientation /*moveDirection*/ == MoveDir.ordinal())
     		return true;
     	
     	//int a = moveDirection.ordinal();
     	int b = MoveDir.ordinal();
     	int c = 0;
-    	if(fOrientation > b)
+    	if(Orientation > b)
     	{
-    		c = (int) (fOrientation - b);
+    		c = (Orientation - b);
     	}
     	else
-    		c = (int) (b - fOrientation);
+    		c = (b - Orientation);
     	
     	if(c < 4)
-    		++fOrientation;
+    	{
+    		++Orientation;
+    		if(Orientation == 8)
+    			Orientation = 0;
+    	}
     	else
-    		--fOrientation;
-    	  	//odejmowac wieksza od mniejszej ?	
-    		
+    	{
+    		--Orientation;
+    		if(Orientation == -1)
+    			Orientation = 7;
+    	}
+
+    	MsgMenager.AddMassage(0,"Orientation: " + Orientation + "");  	
+    	
     	return false;
     }	
 	
@@ -247,7 +273,8 @@ public class Spider extends Animal
 	public void GetNewSluff()
 	{
 		++SluffLevel;
-		this.bitmap = Surface.LoadBitmap(ObjectID, SluffLevel);
+		//add scale all bitmaps by sluuf size
+		//this.bitmap = Surface.LoadBitmap(ObjectID, SluffLevel);
 		SluffTimer = 30000;
 	}
 	
@@ -279,7 +306,7 @@ public class Spider extends Animal
 	public void OnDraw(Canvas canvas) 
 	{
 		//super.OnDraw(canvas);
-		if(bitmaptable[AnimationCurrentState] != null)
-			Surface.OnDraw(canvas, bitmaptable[AnimationCurrentState], fPosX-(fWidth/2), fPosY-(fHeight/2));
+		if(bmpBitmapTable[Orientation][AnimationCurrentState] != null)
+			GFXSurface.GetSurface().OnDraw(canvas, bmpBitmapTable[Orientation][AnimationCurrentState], fPosX-(fWidth/2), fPosY-(fHeight/2));
 	}
 }

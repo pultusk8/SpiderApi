@@ -1,7 +1,5 @@
 package com.example.spiderapi;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -18,14 +16,16 @@ enum MovementFlag
 }
 
 public class Animal 
-{	
+{		
 	//Graphics
 	protected int ObjectID = 0;
 	protected int BitmapID = 0;
+	protected Bitmap bmpBitmapTable[][] = { { null } };
 	protected int AnimationCurrentState = 0;
-	protected int AnimationMaxState = 7; // max bitmaps of animation
-	protected int AnimationTimer = 1000;
+	protected int AnimationTimer = 1000; //first animation
 	protected int AnimationNextTimer = 1000; // time between animation change
+	protected int MaxAnimationsDirection = 8;
+	protected int MaxAnimationFrames = 8;	
 	
 	//Flags
 	protected int MovementFlag = 0;
@@ -34,51 +34,34 @@ public class Animal
 	//Positions
 	protected float fPosX = 50.0f;
 	protected float fPosY = 50.0f;
+	protected float fGoX = 50.0f;
+	protected float fGoY = 50.0f;
 	protected float fHeight = 0.0f;
 	protected float fWidth = 0.0f;
 	protected float fSpeed = 0.0f;
-	protected float fOrientation = 0.0f;
-	protected MoveDirection moveDirection = MoveDirection.Down;
-	//Orientation Explain
-	/*
-	 0 up
-	 1 up right
-	 2 right
-	 3 down right
-	 4 down
-	 5 down left
-	 6 left
-	 7 left up 
-	 */
+	protected int Orientation = 0;
 	protected float fRadius = 0.0f;
-	
-	//Movement and Animations
-	
+	protected MoveDirection moveDirection = MoveDirection.Down;
 	
 	//Social
 	protected int AnimalSize = 1;
 	protected int Health = 5;
+	protected int HungryTimer = 5000; //when spider whant to eat
 	
-	protected Bitmap bitmap = null;
-	protected SurfaceClass Surface = null;
-	protected Terrarium pTerrarium = null;
-	
+	//Position Methods
 	public float GetX() { return fPosX; }
 	public float GetY() { return fPosY; }
 	public float GetW() { return fWidth; }
 	public float GetH() { return fHeight; }
-	
-	public int GetHealth() { return Health; }
-	
 	public void SetPosition(float posX, float posY) { fPosX = posX; fPosY = posY; }
-	
 	public void SetMovementFlag(int Flag) { MovementFlag = Flag; }
+	
+	//Social Methods
+	public int GetHealth() { return Health; }
 	
 	protected void OnCreate()
 	{
-		this.Surface = GFXSurface.GetSurface();
-		this.bitmap = Surface.LoadBitmap(ObjectID, BitmapID);	
-		this.pTerrarium =  GFXSurface.GetTerrarium();
+
 	}
 	
 	public void OnDraw(Canvas canvas)
@@ -86,8 +69,8 @@ public class Animal
 		if(UnitFlag == 1)
 			return;
 		
-		if(bitmap != null)
-			Surface.OnDraw(canvas, bitmap, fPosX-(bitmap.getWidth()/2), fPosY-(bitmap.getHeight()/2));
+		if(bmpBitmapTable[0][0] != null)
+			GFXSurface.GetSurface().OnDraw(canvas, bmpBitmapTable[0][0], fPosX-(bmpBitmapTable[0][0].getWidth()/2), fPosY-(bmpBitmapTable[0][0].getHeight()/2));
 	}
 	
 	public void OnUpdate(long diff)
@@ -103,7 +86,7 @@ public class Animal
 		{
 			++AnimationCurrentState;
 			
-			if(AnimationCurrentState > AnimationMaxState)
+			if(AnimationCurrentState == MaxAnimationFrames)
 				AnimationCurrentState = 0;
 			
 			AnimationTimer = AnimationNextTimer;
