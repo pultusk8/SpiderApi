@@ -7,10 +7,10 @@ import com.example.spiderapi.GFXSurface.SurfaceClass;
 
 public class WormBox 
 {
-	private static float fPosX = 0;
-	private static float fPosY = 0;
-	private static float fHeight = 100;
-	private static float fWidth = 100;
+	private static int nPositionX = 0;
+	private static int nPositionY = 0;
+	private static int nHeight = 100;
+	private static int nWidth = 100;
 
 	private static Bitmap bmpEmptyBox = null;
 	private static Bitmap bmpBox = null;
@@ -27,20 +27,24 @@ public class WormBox
 		bmpBox = Bitmap.createScaledBitmap(bmpBox, GFXSurface.getScreenWidth()/3, GFXSurface.getScreenHeight()/15, true);
 		bmpEmptyBox = Bitmap.createScaledBitmap(bmpEmptyBox, GFXSurface.getScreenWidth()/3, GFXSurface.getScreenHeight()/15, true);
 		
-		fWidth = bmpBox.getWidth();
-		fHeight = bmpBox.getHeight();
-		fPosX = GFXSurface.getScreenWidth() - fWidth;
-		fPosY = GFXSurface.getScreenHeight() - fHeight - 100;
+		if(bmpBox != null)
+		{
+			nWidth = bmpBox.getWidth();
+			nHeight = bmpBox.getHeight();
+		}
 		
-		MsgMenager.AddMssage(0, (int) fPosX);
-		MsgMenager.AddMssage(1, (int) fPosY);
-		MsgMenager.AddMassage(2,"Wormbox Wigth: " + fWidth + "");
-		MsgMenager.AddMassage(3,"Wormbox Height: " + fHeight + "");
+		nPositionX = GFXSurface.getScreenWidth() - nWidth;
+		nPositionY = GFXSurface.getScreenHeight() - nHeight - 100;		
+		
+		MsgMenager.AddMssage(0, nPositionX);
+		MsgMenager.AddMssage(1, nPositionY);
+		MsgMenager.AddMassage(2,"Wormbox Wigth: " + nWidth + "");
+		MsgMenager.AddMassage(3,"Wormbox Height: " + nHeight + "");
 	}
 	
 	public static boolean IsOnPosition(float fOnTouchX, float fOnTouchY)
 	{
-	    if( ( fOnTouchX > fPosX ) && ( fOnTouchX < fPosX + fWidth) && ( fOnTouchY > fPosY ) && ( fOnTouchY < fPosY + fHeight ) )
+	    if( ( fOnTouchX > nPositionX ) && ( fOnTouchX < nPositionX + nWidth) && ( fOnTouchY > nPositionY ) && ( fOnTouchY < nPositionY + nHeight ) )
 	        return true;
 
 	    return false;
@@ -73,13 +77,13 @@ public class WormBox
 	public static void OnDraw(Canvas canvas) 
 	{		
 		if(bmpOnDrawReady != null)
-			GFXSurface.GetSurface().OnDraw(canvas, bmpOnDrawReady, fPosX, fPosY);
+			GFXSurface.GetSurface().OnDraw(canvas, bmpOnDrawReady, nPositionX, nPositionY);
 	}	
 	
-	public static float GetPositionX() { return fPosX; }
-	public static float GetPositionY() { return fPosY; }
-	public static float GetHeight() { return fHeight; }
-	public static float GetWidth() { return fWidth; }
+	public static float GetPositionX() { return nPositionX; }
+	public static float GetPositionY() { return nPositionY; }
+	public static float GetHeight() { return nHeight; }
+	public static float GetWidth() { return nWidth; }
 	
-	public static void SetPosition(float fOnTouchX, float fOnTouchY) { fPosX = fOnTouchX; fPosY = fOnTouchY; }
+	public static void SetPosition(float fOnTouchX, float fOnTouchY) { nPositionX = (int) fOnTouchX; nPositionY = (int) fOnTouchY; }
 }

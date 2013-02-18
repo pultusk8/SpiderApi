@@ -56,6 +56,7 @@ public class Animal
 	
 	
 	//Social
+	protected int AnimalSize = 1;
 	protected int Health = 5;
 	
 	protected Bitmap bitmap = null;

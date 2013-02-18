@@ -18,7 +18,7 @@ public class Terrarium
 	public Terrarium()
 	{
 		this.bitmap = GFXSurface.GetSurface().LoadBitmap(TerrariumID, TerrBitmapID);
-		this.bitmap = Bitmap.createScaledBitmap(bitmap, GFXSurface.getScreenWidth(), GFXSurface.getScreenHeight() - (int)WormBox.GetHeight(), false);
+		this.bitmap = Bitmap.createScaledBitmap(bitmap, GFXSurface.getScreenWidth(), (int) (GFXSurface.getScreenHeight() - WormBox.GetHeight() - 100), true);
 		
 		fWidth = bitmap.getWidth();
 		fHeight = bitmap.getHeight();

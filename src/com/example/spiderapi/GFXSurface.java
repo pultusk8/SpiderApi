@@ -30,12 +30,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Game Options
 	//actual gamestate
-	EnumGameState CurrentGameState = EnumGameState.Game;
+	static protected EnumGameState CurrentGameState = EnumGameState.Game;
 	
-	//Screen Size
+	//Screen Size variables
     static int screenHeight;
     static int screenWidth;	
-    //screen Size methods
+    //Screen Size methods
     static int getScreenHeight() { return screenHeight; }
     static int getScreenWidth() { return screenWidth; }
     //
@@ -68,6 +68,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 			
 		//Initialize Game
 		
+		//Create a surface
+		Surface = new SurfaceClass(this);
+		Surface.setOnTouchListener(this);
+		setContentView(Surface);	
+		
 		//Get Screen Size
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
@@ -78,17 +83,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 		MsgMenager.AddMassage(1,"Screen Height: " + screenHeight + "");
 		//
 	
-		//Initialize AnimalMenager
-		WormMenager.OnCreate();
-		
 		//Timer
-		StartTime = CurrentTime = LastCurrentTime = 0;
+		CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
 		
-		//Create a surface
-		Surface = new SurfaceClass(this);
-		Surface.setOnTouchListener(this);
-		setContentView(Surface);
+		// !!! All objects loading bitmaps need to be below this line !!!
+		//Create in game button
+		GameButtonMenu.OnCreate();
+		
+		//Initialize AnimalMenager
+		WormMenager.OnCreate();
 		
 		//Initialize Objects
 		WormBox.OnCreate();
@@ -306,6 +310,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 					}
 					break;					
 				}
+				//InGame Menu Button
+				case 40:
+				{
+					switch(BitmapID)
+					{
+						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_menu); break;
+				
+						default: break;					
+					}
+				}
 				default: break;
 			}
 			
@@ -375,17 +389,23 @@ public class GFXSurface extends Activity implements OnTouchListener
 					    }
 						case Game:
 						{
+							
+							
 							if(pTerrarium != null)
 								pTerrarium.OnDraw(canvas);		
+							
+							WormMenager.OnDraw(canvas);
 							
 							if(spider != null)	
 								spider.OnDraw(canvas);
 									
 							WormBox.OnDraw(canvas);
 							
-							WormMenager.OnDraw(canvas);
+							
 							
 							MsgMenager.OnDraw(canvas);							
+							
+							GameButtonMenu.OnDraw(canvas);
 							
 							break;
 						}
