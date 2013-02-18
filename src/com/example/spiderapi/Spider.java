@@ -51,6 +51,7 @@ public class Spider extends Animal
 		this.SetPosition(100,100);
 		
 		bmpBitmapTable[0][0] = GFXSurface.GetSurface().LoadBitmap(ObjectID, 0, 0);
+		bmpBitmapTable[0][0] = Bitmap.createScaledBitmap(bmpBitmapTable[0][0], 150, 150, true);
 		
 		//Load Bitmaps
 		for(int x=0; x<MaxAnimationsDirection; ++x)
@@ -59,7 +60,7 @@ public class Spider extends Animal
 			{		
 				
 				bmpBitmapTable[x][i] = bmpBitmapTable[0][0];
-				bmpBitmapTable[x][i] = Bitmap.createScaledBitmap(bmpBitmapTable[x][i], 150, 150, true);
+				
 				/*
 				bmpBitmapTable[x][i] = GFXSurface.GetSurface().LoadBitmap(ObjectID, x, i);
 				bmpBitmapTable[x][i] = Bitmap.createScaledBitmap(bmpBitmapTable[x][i], 150, 150, true);
@@ -196,7 +197,6 @@ public class Spider extends Animal
 	        
 	    //Prepare orientation
 	    //ChangeOrientationDueToWaypoint();
-	    
 	    if(!CheckOrientation(Move))     	
 	    	return;   
 	    
@@ -246,19 +246,20 @@ public class Spider extends Animal
     	
     	if(c < 4)
     	{
-    		++Orientation;
-    		if(Orientation == 8)
-    			Orientation = 0;
-    	}
-    	else
-    	{
     		--Orientation;
     		if(Orientation == -1)
     			Orientation = 7;
     	}
+    	else
+    	{
+    		++Orientation;
+    		if(Orientation == 8)
+    			Orientation = 0;  		
+    	}
 
-    	MsgMenager.AddMassage(0,"Orientation: " + Orientation + "");  	
     	
+    	MsgMenager.AddMassage(0,"Orientation: " + Orientation + "");  	
+    	MsgMenager.AddMassage(1,"Destination: " + MoveDir.ordinal() + "");
     	return false;
     }	
 	
