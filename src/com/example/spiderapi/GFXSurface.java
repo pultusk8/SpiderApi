@@ -11,7 +11,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -19,12 +18,28 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+enum EnumGameState 
+{
+	LoadingScreen,
+	Game,
+	InGameMenu,
+	MainMenu
+}
+
 public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Game Options
+	//actual gamestate
+	EnumGameState CurrentGameState = EnumGameState.Game;
+	
+	//Screen Size
     static int screenHeight;
     static int screenWidth;	
-
+    //screen Size methods
+    static int getScreenHeight() { return screenHeight; }
+    static int getScreenWidth() { return screenWidth; }
+    //
+    
 	static SurfaceClass Surface 	= null;
 	static Terrarium pTerrarium 	= null;
 	
@@ -50,24 +65,21 @@ public class GFXSurface extends Activity implements OnTouchListener
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		
-		//Initialize AnimalMenager
-		WormMenager.OnCreate();
-		
-		
+			
 		//Initialize Game
+		
+		//Get Screen Size
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
-		int width = size.x;
-		int height = size.y;
-		MsgMenager.AddMssage(0, width);
-		MsgMenager.AddMssage(1, height);
-		/*
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-	    getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-	    screenHeight = displaymetrics.heightPixels;
-	    screenWidth = displaymetrics.widthPixels;	*/	
+		screenHeight = size.y;
+		screenWidth = size.x;
+		MsgMenager.AddMassage(0,"Screen Width: " + screenWidth + "");
+		MsgMenager.AddMassage(1,"Screen Height: " + screenHeight + "");
+		//
+	
+		//Initialize AnimalMenager
+		WormMenager.OnCreate();
 		
 		//Timer
 		StartTime = CurrentTime = LastCurrentTime = 0;
@@ -79,9 +91,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 		setContentView(Surface);
 		
 		//Initialize Objects
+		WormBox.OnCreate();
 		pTerrarium = new Terrarium();
 		spider = new Spider();
-		WormBox.OnCreate();
+		
 
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -230,7 +243,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		public Bitmap LoadBitmap(int SpiderID, int BitmapID)
 		{
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider);
+			Bitmap bmp = null;
 			
 			switch(SpiderID)
 			{
@@ -255,7 +268,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 				{
 					switch(BitmapID)
 					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.spider); break;
+						case 0: break;
 						case 1: break;
 						default: break;
 					}
@@ -338,8 +351,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 			if(currentthread == null)
 				return;
 				
-			int fpscounter = 0;
-			int fpstimer = 100;
+			//int fpscounter = 0;
+			//int fpstimer = 100;
 			
 			while(IsRunning)
 			{	
@@ -350,34 +363,43 @@ public class GFXSurface extends Activity implements OnTouchListener
 				if(currentthread == ThreadOne)
 				{	
 					if(!surfHolder.getSurface().isValid())
-						continue;
-		    	
-					//draw background
+						continue;	
+					
 					Canvas canvas = surfHolder.lockCanvas();
-					canvas.drawRGB(0, 0, 0);
 					
-					if(pTerrarium != null)
-						pTerrarium.OnDraw(canvas);		
-					
-					if(spider != null)	
-						spider.OnDraw(canvas);
+					switch(CurrentGameState)
+					{
+					    case LoadingScreen:
+					    {
+					    	break;
+					    }
+						case Game:
+						{
+							if(pTerrarium != null)
+								pTerrarium.OnDraw(canvas);		
 							
-					WormBox.OnDraw(canvas);
-					
-					WormMenager.OnDraw(canvas);
-					
-					MsgMenager.OnDraw(canvas);
-					
-					/*
-			    	if(fpstimer < TimeDiff)
-			    	{
-			    		//MsgMenager.AddMssage(1,fpscounter);
-			    		fpstimer = 1000;
-			    		fpscounter = 0;
-			    	}fpstimer -= TimeDiff;
-					
-			    	++fpscounter;	*/				
-					
+							if(spider != null)	
+								spider.OnDraw(canvas);
+									
+							WormBox.OnDraw(canvas);
+							
+							WormMenager.OnDraw(canvas);
+							
+							MsgMenager.OnDraw(canvas);							
+							
+							break;
+						}
+						case InGameMenu:
+						{
+							break;
+						}
+						case MainMenu:
+						{
+							break;
+						}
+						default: break;
+					}					
+
 					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
 				

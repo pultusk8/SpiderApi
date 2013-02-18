@@ -41,14 +41,17 @@ public class Spider extends Animal
 		fRadius = 10.0f;
 		MovementFlag = 1; //super
 		fSpeed = 0.5f;
-		fWidth = this.bitmap.getWidth();
-		fHeight = this.bitmap.getHeight();
-		this.SetPosition(19,45);
+
+		this.SetPosition(100,100);
 		
-		for(int i =0; i<8; ++i)
+		for(int i=0; i<8; ++i)
 		{
 			bitmaptable[i] = Surface.LoadBitmap(ObjectID, i);
+			bitmaptable[i] = Bitmap.createScaledBitmap(bitmaptable[i], 150, 150, true);
 		}
+		
+		fWidth = this.bitmaptable[1].getWidth();
+		fHeight = this.bitmaptable[1].getHeight();
 	}
 	
 	private void OnEatTime(long diff)
@@ -86,8 +89,8 @@ public class Spider extends Animal
 	private void RandomWaypoint()
 	{
 		int TerrX, TerrY;
-		TerrX = pTerrarium.GetX();
-		TerrY = pTerrarium.GetY();
+		TerrX = pTerrarium.GetWidth();
+		TerrY = pTerrarium.GetHeight();
 			
 		long random = System.currentTimeMillis();
 		
@@ -253,8 +256,8 @@ public class Spider extends Animal
 	{	
 		super.OnUpdate(diff);
 		
-		if(Health < -5)
-			return;
+		//if(Health < -5)
+			//return;
 			//Smierc :D
 		
 		if(Health <= 0)
@@ -277,6 +280,6 @@ public class Spider extends Animal
 	{
 		//super.OnDraw(canvas);
 		if(bitmaptable[AnimationCurrentState] != null)
-			Surface.OnDraw(canvas, bitmaptable[AnimationCurrentState], fPosX-(bitmap.getWidth()/2), fPosY-(bitmap.getHeight()/2));
+			Surface.OnDraw(canvas, bitmaptable[AnimationCurrentState], fPosX-(fWidth/2), fPosY-(fHeight/2));
 	}
 }

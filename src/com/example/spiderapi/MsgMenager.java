@@ -6,12 +6,13 @@ import android.graphics.Paint;
 
 public class MsgMenager 
 {
+	private static String stringtable[] = { null, null, null, null };
 	static private String X = "";
 	static private String Y = "";
 	static private String Z = "";
 	static private String fps = "";
-	static private String fps1 = "";
-	static private int fpsnumber[] = { 0,0 };
+	private static int fpsnumber[] = { 0,0,0,0 };
+
 
 	static public void AddMssage(int msgtype, int Fps)
 	{
@@ -25,12 +26,10 @@ public class MsgMenager
 			X = "" + GFXSurface.spider.GetX();
 			Y = "" + GFXSurface.spider.GetY();
 			Z = "" + GFXSurface.spider.GetHealth();
-			fps = "" + fpsnumber[0];
-			fps1 = "" + fpsnumber[1];
 		}
 	}
 	
-	static public void OnDraw(Canvas canvas)
+	public static void OnDraw(Canvas canvas)
 	{
 		//Text Testing
 		Paint paint = new Paint(); 
@@ -38,15 +37,27 @@ public class MsgMenager
 		paint.setTextSize(20); 
 		
 		String temp1 = "Spider Health: " + Z;
-		canvas.drawText(temp1, 20, 375, paint);		
+		canvas.drawText(temp1, 20, 550, paint);		
 		
 		String temp = "Spider Position: " + X + " : " + Y;
-		canvas.drawText(temp, 20, 300, paint);
+		canvas.drawText(temp, 20, 575, paint);
 		
-		String temp2 = "FPS: " + fps;
-		canvas.drawText(temp2, 20, 600, paint);
+		for(int i=0; i<4; ++i)
+		{
+			fps = "" + fpsnumber[i];
+			String temp2 = "res: " + fps;
+			canvas.drawText(temp2, 20, 600+i*25, paint);
+		}
 		
-		String temp3 = "FPS: " + fps1;
-		canvas.drawText(temp3, 20, 630, paint);
+		for(int i=0; i<4; ++i)
+		{
+			if(stringtable[i] != null)
+				canvas.drawText(stringtable[i], 200, 600+i*25, paint);
+		}
+	}
+
+	public static void AddMassage(int msgtype, String string) 
+	{
+		stringtable[msgtype] = string;
 	}
 }

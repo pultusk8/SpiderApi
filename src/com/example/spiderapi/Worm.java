@@ -22,8 +22,8 @@ public class Worm extends Animal
 		fWidth = 20.0f;
 		fHeight = 20.0f;
 		
-		fPosX = WormBox.GetX() + 14;
-		fPosY = WormBox.GetY() + 53;
+		fPosX = WormBox.GetPositionX() + 14;
+		fPosY = WormBox.GetPositionY() + 53;
 
 		WormMenager.AddWorm(this);
 	}
