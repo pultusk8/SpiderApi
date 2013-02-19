@@ -51,22 +51,33 @@ public class ButtonMenager
 		
 		switch(currentGameState)
 		{
+			case MainMenu:
+			{
+				new InterfaceButton(303);
+				//new InterfaceButton(301);
+				//new InterfaceButton(302);
+				break;
+			}
 			case Game:
+			case InGameMenu:
+			case InGameSpiderStat:
+			case InGameWormShop:
 			{
 				new InterfaceButton(300);
 				new InterfaceButton(301);
 				new InterfaceButton(302);
 				break;
 			}
+			
 				
 			default:
 				break;
 		}
-		
 	}
 
 	private static void RemoveButtons() 
 	{
+		n=0;
 		for(int i=0; i<nButtonTableSize; ++i)
 		{
 			ButtonTable[i] = null;

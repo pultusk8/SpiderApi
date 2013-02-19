@@ -3,8 +3,6 @@ package com.example.spiderapi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.example.spiderapi.GFXSurface.SurfaceClass;
-
 public class InterfaceButton 
 {
 	private int nPositionX = 0;
@@ -18,14 +16,13 @@ public class InterfaceButton
 	public InterfaceButton(int ButtonID)
 	{
 		nButtonID = ButtonID;
-		nBitmapID = nButtonID;
+		nBitmapID = ButtonBitmapIDTable[nButtonID-300];
 		OnCreate();
 	}
 	
 	public void OnCreate()
 	{			
-		SurfaceClass teampSurface = GFXSurface.GetSurface();
-		bmpBitmap = teampSurface.LoadBitmap(nButtonID, nBitmapID);
+		bmpBitmap = GFXSurface.GetSurface().LoadBitmap(nBitmapID);
 			
 		if(bmpBitmap == null)
 			return;	
@@ -47,21 +44,23 @@ public class InterfaceButton
 			case 300:
 				nPositionX = 0;
 				nPositionY = GFXSurface.getScreenHeight() - nHeight;
-				MsgMenager.AddMassage(1,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
 			
 			case 301:
 				nPositionX = nWidth;
 				nPositionY = GFXSurface.getScreenHeight() - nHeight;
-				MsgMenager.AddMassage(2,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
 				
 			case 302:
 				nPositionX = nWidth*2;
 				nPositionY = GFXSurface.getScreenHeight() - nHeight;
-				MsgMenager.AddMassage(3,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
-			
+				
+			case 303:
+				nPositionX = 200;
+				nPositionY = 400;
+				break;
+				
 			default: break;
 		}
 	}
@@ -110,9 +109,10 @@ public class InterfaceButton
 				else
 					GFXSurface.SetCurrentGameStatte(EnumGameState.InGameSpiderStat);			
 				break;
-			case 400:
-				GFXSurface.QuitFromGame();
-				break;
+			case 303:
+				if(GFXSurface.GetCurrentGameState() == EnumGameState.MainMenu)
+					GFXSurface.SetCurrentGameStatte(EnumGameState.Game);		
+				break;				
 				
 			default: break;
 		}
@@ -133,4 +133,14 @@ public class InterfaceButton
 
 	    return false;
 	}
+	
+	private int ButtonBitmapIDTable[] =
+	{
+		//bitmapid, posX, posY
+		R.drawable.ingame_button_menu, 
+		R.drawable.ingame_button_spider, 
+		R.drawable.ingame_button_wormbox, 
+		R.drawable.mainmenu_button_play, 
+
+	};
 }

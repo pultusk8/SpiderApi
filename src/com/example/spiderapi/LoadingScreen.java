@@ -42,7 +42,7 @@ public class LoadingScreen extends Activity
 				}
 				finally
 				{
-					Intent MainMenu = new Intent("com.example.spiderapi.MENU");
+					Intent MainMenu = new Intent("com.example.spiderapi.GFXSurface");
 					startActivity(MainMenu);
 				}
 			}

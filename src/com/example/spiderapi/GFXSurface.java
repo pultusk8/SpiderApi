@@ -34,7 +34,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Game Options
 	//actual gamestate
-	private static EnumGameState CurrentGameState = EnumGameState.Game;
+	private static EnumGameState CurrentGameState = EnumGameState.MainMenu;
 	//Bool for end of game
 	private static boolean IsRunning = false;
 	
@@ -64,6 +64,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 	boolean IsWormBoxTaken = false;
 	Worm TouchedWorm = null;
 	Spider TouchedSpider = null;
+	
+	private Bitmap bmpMainMenuBackground = null;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -116,8 +118,18 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		//save load 
 		Data = getSharedPreferences(filename, 0);	
+		
+		//Prepare MainMenu
+		LoadMainMenuBackground();		
 	}
 
+	private void LoadMainMenuBackground() 
+	{
+		bmpMainMenuBackground = Surface.LoadBitmap(400, 0);
+		if(bmpMainMenuBackground != null)
+			bmpMainMenuBackground = Bitmap.createScaledBitmap(bmpMainMenuBackground, GFXSurface.getScreenWidth(), GFXSurface.getScreenHeight(), true);
+	}
+	
 	private void OnSave()
 	{
 		if(spider == null)
@@ -260,6 +272,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 			
 			canvas.drawBitmap(bitmap, fPosX, fPosY, null);
 		}		
+		
+		public Bitmap LoadBitmap(int BitmapID)
+		{
+			return BitmapFactory.decodeResource(getResources(), BitmapID);
+		}
 		
 		public Bitmap LoadBitmap(int ObjectID, int AnimationDirection, int AnimationFrame)
 		{		
@@ -414,11 +431,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 			return bmpTemp;
 		}
 		
-		public Bitmap LoadBitmap(int SpiderID, int BitmapID)
+		public Bitmap LoadBitmap(int ObjectID, int BitmapID)
 		{
 			Bitmap bmp = null;
 			
-			switch(SpiderID)
+			switch(ObjectID)
 			{
 				//Spider
 				case 0:
@@ -479,13 +496,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 					}
 					break;					
 				}
-				//InGame Menu Button
-				case 300: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_menu); break;
-
-				case 301: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_spider); break;
 				
-				case 302: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_wormbox); break;
-				
+				case 400: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.menu_background_hdpi); break;
 				default: break;
 			}
 			
@@ -577,6 +589,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 						}
 						case MainMenu:
 						{
+							if(bmpMainMenuBackground != null) Surface.OnDraw(canvas, bmpMainMenuBackground, 0, 0);
 							break;
 						}
 						default: break;
@@ -619,7 +632,13 @@ public class GFXSurface extends Activity implements OnTouchListener
 	
 	public static void SetCurrentGameStatte(EnumGameState GameState) 
 	{ 
+		//Do everything from old state
+		
+		
 		CurrentGameState = GameState; 
+		
+		//Do everything from new state
+		ButtonMenager.CreateButtons(CurrentGameState);
 		
 		//Zainicjuj Guziki 
 		

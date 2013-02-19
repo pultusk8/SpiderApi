@@ -42,15 +42,6 @@
             </intent-filter>
         </activity>       
         
-        <activity
-            android:name=".Menu"
-            android:label="@string/title_activity_activity_core" >
-            <intent-filter>
-                <action android:name="com.example.spiderapi.MENU" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>          
-        
          <activity
             android:name=".GFXSurface"
             android:label="@string/title_activity_activity_core" >
