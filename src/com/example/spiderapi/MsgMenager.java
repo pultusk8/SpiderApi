@@ -36,12 +36,38 @@ public class MsgMenager
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(20); 
 		
-		String temp1 = "Spider Health: " + Z;
-		canvas.drawText(temp1, 20, 550, paint);		
-		
-		String temp = "Spider Position: " + X + " : " + Y;
-		canvas.drawText(temp, 20, 575, paint);
-		
+		switch(GFXSurface.GetCurrentGameState())
+		{
+		    case LoadingScreen:
+		    {
+		    	break;
+		    }
+			case Game:
+			{						
+				break;
+			}
+			case InGameMenu:
+			{
+				break;
+			}
+			
+			case InGameSpiderStat:
+			{
+				String temp1 = "Spider Health: " + Z;
+				canvas.drawText(temp1, 20, 550, paint);		
+				
+				String temp = "Spider Position: " + X + " : " + Y;
+				canvas.drawText(temp, 20, 575, paint);
+				
+				break;
+			}
+			case MainMenu:
+			{
+				break;
+			}
+			default: break;
+		}	
+
 		for(int i=0; i<4; ++i)
 		{
 			fps = "" + fpsnumber[i];

@@ -25,6 +25,8 @@ enum EnumGameState
 	LoadingScreen,
 	Game,
 	InGameMenu,
+	InGameSpiderStat,
+	InGameWormShop,
 	MainMenu
 }
 
@@ -32,16 +34,17 @@ public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Game Options
 	//actual gamestate
-	static protected EnumGameState CurrentGameState = EnumGameState.Game;
+	private static EnumGameState CurrentGameState = EnumGameState.Game;
+	//Bool for end of game
+	private static boolean IsRunning = false;
 	
 	//Screen Size variables
-    static int screenHeight;
-    static int screenWidth;	
+    private static int screenHeight;
+    private static int screenWidth;	
     //Screen Size methods
     static int getScreenHeight() { return screenHeight; }
     static int getScreenWidth() { return screenWidth; }
-    //
-    
+    //  
 	static SurfaceClass Surface 	= null;
 	static Terrarium pTerrarium 	= null;
 	
@@ -165,6 +168,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 		float fOnTouchX = event.getX();
 		float fOnTouchY = event.getY();
 		
+		InterfaceButton bButton = ButtonMenager.GetButtonOnPosition(fOnTouchX, fOnTouchY);
+		
 		if(TouchedWorm != null)
 			TouchedWorm.SetPosition(fOnTouchX, fOnTouchY);
 		
@@ -199,10 +204,13 @@ public class GFXSurface extends Activity implements OnTouchListener
 			}
 			
 			case MotionEvent.ACTION_UP:
-			{
-			
-				InterfaceButton bButton = ButtonMenager.GetButtonOnPosition(fOnTouchX, fOnTouchY);
-				if(bButton != null) { bButton.OnClickUp(); bButton = null; } 
+			{			
+				if(bButton != null) 
+				{ 
+					bButton.OnClickUp(); 
+					bButton = null; 
+					break; 
+				} 
 				
 				
 				if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
@@ -244,8 +252,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		private SurfaceHolder surfHolder = null;
 		private Thread ThreadOne = null;
 		private Thread ThreadTwo = null;
-		private boolean IsRunning = false;
-	
+		
 		public void OnDraw(Canvas canvas,Bitmap bitmap,float fPosX, float fPosY)
 		{
 			if(bitmap == null || canvas == null)
@@ -540,9 +547,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(0, 0, 0);
-					
-					ButtonMenager.OnDraw(canvas);
-					
+									
 					switch(CurrentGameState)
 					{
 					    case LoadingScreen:
@@ -560,9 +565,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 								spider.OnDraw(canvas);
 									
 							//WormBox.OnDraw(canvas);
-	
-							MsgMenager.OnDraw(canvas);							
-
+							break;
+						}
+						case InGameSpiderStat:
+						{
 							break;
 						}
 						case InGameMenu:
@@ -576,11 +582,14 @@ public class GFXSurface extends Activity implements OnTouchListener
 						default: break;
 					}					
 
+					ButtonMenager.OnDraw(canvas);
+					MsgMenager.OnDraw(canvas);					
+					
 					surfHolder.unlockCanvasAndPost(canvas);	
 				}	
 				
 				if(currentthread == ThreadTwo)
-				{		
+				{	
 					MsgMenager.OnUpdate(TimeDiff);
 					
 					try
@@ -607,5 +616,23 @@ public class GFXSurface extends Activity implements OnTouchListener
 	}
 
 	public static EnumGameState GetCurrentGameState() { return CurrentGameState; }
-	public static void SetCurrentGameStatte(EnumGameState GameState) { CurrentGameState = GameState; }
+	
+	public static void SetCurrentGameStatte(EnumGameState GameState) 
+	{ 
+		CurrentGameState = GameState; 
+		
+		//Zainicjuj Guziki 
+		
+		//Zainicjuj tlo
+		
+		//zainicjuj narzedzia danego stanu gry	
+		
+		//przy kazdej inicjajci kasacja dotychczasowego stanu
+	}
+	public static void QuitFromGame() 
+	{
+		IsRunning = false;
+		//save staff
+		//delete all
+	}
 }
