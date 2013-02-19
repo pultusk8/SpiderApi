@@ -35,11 +35,6 @@ public class WormBox
 		
 		nPositionX = GFXSurface.getScreenWidth() - nWidth;
 		nPositionY = GFXSurface.getScreenHeight() - nHeight - 100;		
-		
-		MsgMenager.AddMssage(0, nPositionX);
-		MsgMenager.AddMssage(1, nPositionY);
-		MsgMenager.AddMassage(2,"Wormbox Wigth: " + nWidth + "");
-		MsgMenager.AddMassage(3,"Wormbox Height: " + nHeight + "");
 	}
 	
 	public static boolean IsOnPosition(float fOnTouchX, float fOnTouchY)

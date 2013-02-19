@@ -7,13 +7,13 @@ import com.example.spiderapi.GFXSurface.SurfaceClass;
 
 public class InterfaceButton 
 {
-	private static int nPositionX = 0;
-	private static int nPositionY = 0;
-	private static int nHeight = 0;
-	private static int nWidth = 0;
-	private static int nButtonID= 0;
-	private static int nBitmapID= 0;
-	private static Bitmap bmpBitmap = null;
+	private int nPositionX = 0;
+	private int nPositionY = 0;
+	private int nHeight = 0;
+	private int nWidth = 0;
+	private int nButtonID= 0;
+	private int nBitmapID= 0;
+	private Bitmap bmpBitmap = null;
 	
 	public InterfaceButton(int ButtonID)
 	{
@@ -26,17 +26,17 @@ public class InterfaceButton
 	{			
 		SurfaceClass teampSurface = GFXSurface.GetSurface();
 		bmpBitmap = teampSurface.LoadBitmap(nButtonID, nBitmapID);
-		
+			
 		if(bmpBitmap == null)
-			return;
-		
+			return;	
+
 		ScaleBitmap();
 
 		nWidth = bmpBitmap.getWidth();
 		nHeight = bmpBitmap.getHeight();
 
 		SetUpPosition();
-			
+				
 		ButtonMenager.AddButton(this);
 	}
 
@@ -46,17 +46,20 @@ public class InterfaceButton
 		{
 			case 300:
 				nPositionX = 0;
-				nPositionY = GFXSurface.getScreenHeight() - nHeight - 100;
+				nPositionY = GFXSurface.getScreenHeight() - nHeight;
+				MsgMenager.AddMassage(1,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
 			
 			case 301:
-				nPositionX = nWidth*2;
-				nPositionY = GFXSurface.getScreenHeight() - nHeight - 100;
+				nPositionX = nWidth;
+				nPositionY = GFXSurface.getScreenHeight() - nHeight;
+				MsgMenager.AddMassage(2,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
 				
 			case 302:
-				nPositionX = nWidth*3;
-				nPositionY = GFXSurface.getScreenHeight() - nHeight - 100;
+				nPositionX = nWidth*2;
+				nPositionY = GFXSurface.getScreenHeight() - nHeight;
+				MsgMenager.AddMassage(3,"nButtonID: " + nPositionX + " : " + nPositionY + "");
 				break;
 			
 			default: break;
@@ -67,8 +70,8 @@ public class InterfaceButton
 	{		
 		switch(nButtonID)
 		{
-			case 300:
-			case 301:
+			case 300: 
+			case 301: 
 			case 302:
 				bmpBitmap = Bitmap.createScaledBitmap(bmpBitmap, GFXSurface.getScreenWidth()/3, GFXSurface.getScreenHeight()/15, true);
 				break;

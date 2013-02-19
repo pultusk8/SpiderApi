@@ -257,9 +257,6 @@ public class Spider extends Animal
     			Orientation = 0;  		
     	}
 
-    	
-    	MsgMenager.AddMassage(0,"Orientation: " + Orientation + "");  	
-    	MsgMenager.AddMassage(1,"Destination: " + MoveDir.ordinal() + "");
     	return false;
     }	
 	

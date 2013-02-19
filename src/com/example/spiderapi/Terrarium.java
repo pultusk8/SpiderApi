@@ -18,13 +18,10 @@ public class Terrarium
 	public Terrarium()
 	{
 		this.bitmap = GFXSurface.GetSurface().LoadBitmap(TerrariumID, TerrBitmapID);
-		this.bitmap = Bitmap.createScaledBitmap(bitmap, GFXSurface.getScreenWidth(), (int) (GFXSurface.getScreenHeight() - WormBox.GetHeight() - 100), true);
+		this.bitmap = Bitmap.createScaledBitmap(bitmap, GFXSurface.getScreenWidth(), (int) (GFXSurface.getScreenHeight() - WormBox.GetHeight()), true);
 		
 		fWidth = bitmap.getWidth();
 		fHeight = bitmap.getHeight();
-	
-		MsgMenager.AddMssage(2, (int) fWidth);
-		MsgMenager.AddMssage(3, (int) fHeight);
 	}	
 	
 	public int GetWidth() {return fWidth; }

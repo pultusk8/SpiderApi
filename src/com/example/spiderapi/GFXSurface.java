@@ -16,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 
 enum EnumGameState 
@@ -68,6 +70,10 @@ public class GFXSurface extends Activity implements OnTouchListener
 			
 		//Initialize Game
 		
+		//full screen before all shit happens
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		//Create a surface
 		Surface = new SurfaceClass(this);
 		Surface.setOnTouchListener(this);
@@ -80,9 +86,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		screenHeight = size.y;
 		screenWidth = size.x;
 		//
-	
-		
-		
+
 		//Timer
 		CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
@@ -558,9 +562,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 							//WormBox.OnDraw(canvas);
 	
 							MsgMenager.OnDraw(canvas);							
-												
-							
-							
+
 							break;
 						}
 						case InGameMenu:
