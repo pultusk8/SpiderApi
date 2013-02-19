@@ -81,13 +81,18 @@ public class GFXSurface extends Activity implements OnTouchListener
 		screenWidth = size.x;
 		//
 	
+		
+		
 		//Timer
 		CurrentTime = LastCurrentTime = 0;
 		StartTime = System.currentTimeMillis();
 		
 		// !!! All objects loading bitmaps need to be below this line !!!
-		//Create in game button
-		GameButtonMenu.OnCreate();
+		
+		//Load BackGround
+		
+		//Load Buttons
+		ButtonMenager.CreateButtons(CurrentGameState);	
 		
 		//Initialize AnimalMenager
 		WormMenager.OnCreate();
@@ -152,7 +157,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 
 	//called when u touch the screen with this activity opened
 	public boolean onTouch(View v, MotionEvent event)
-	{		
+	{	
 		float fOnTouchX = event.getX();
 		float fOnTouchY = event.getY();
 		
@@ -191,6 +196,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 			
 			case MotionEvent.ACTION_UP:
 			{
+			
+				InterfaceButton bButton = ButtonMenager.GetButtonOnPosition(fOnTouchX, fOnTouchY);
+				if(bButton != null) { bButton.OnClickUp(); bButton = null; } 
+				
+				
 				if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
 					if(WormBox.IsEmpty() && TouchedWorm == null)
@@ -459,15 +469,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 					break;					
 				}
 				//InGame Menu Button
-				case 40:
-				{
-					switch(BitmapID)
-					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_menu); break;
+				case 300: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_menu); break;
+
+				case 301: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_spider); break;
 				
-						default: break;					
-					}
-				}
+				case 302: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ingame_button_wormbox); break;
+				
 				default: break;
 			}
 			
@@ -530,6 +537,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(0, 0, 0);
 					
+					ButtonMenager.OnDraw(canvas);
+					
 					switch(CurrentGameState)
 					{
 					    case LoadingScreen:
@@ -538,8 +547,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 					    }
 						case Game:
 						{
-							
-							
 							if(pTerrarium != null)
 								pTerrarium.OnDraw(canvas);		
 							
@@ -548,13 +555,11 @@ public class GFXSurface extends Activity implements OnTouchListener
 							if(spider != null)	
 								spider.OnDraw(canvas);
 									
-							WormBox.OnDraw(canvas);
-							
-							
-							
+							//WormBox.OnDraw(canvas);
+	
 							MsgMenager.OnDraw(canvas);							
+												
 							
-							GameButtonMenu.OnDraw(canvas);
 							
 							break;
 						}
@@ -598,4 +603,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 			}
 		}
 	}
+
+	public static EnumGameState GetCurrentGameState() { return CurrentGameState; }
+	public static void SetCurrentGameStatte(EnumGameState GameState) { CurrentGameState = GameState; }
 }
