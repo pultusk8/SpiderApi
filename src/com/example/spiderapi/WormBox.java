@@ -1,6 +1,7 @@
 package com.example.spiderapi;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.spiderapi.GFXSurface.SurfaceClass;
@@ -12,6 +13,9 @@ public class WormBox
 	private static int nHeight = 100;
 	private static int nWidth = 100;
 
+	private static int WormboxBitmapID = R.drawable.wormbox01; 
+	private static int EmptyWormboxBitmapID = R.drawable.wormbox01addworm;
+
 	private static Bitmap bmpEmptyBox = null;
 	private static Bitmap bmpBox = null;
 	private static Bitmap bmpOnDrawReady = null;
@@ -19,10 +23,9 @@ public class WormBox
 	private static boolean IsBoxEmpty = true;
 		
 	public static void OnCreate()
-	{
-		SurfaceClass Surface = GFXSurface.GetSurface();
-		bmpBox = Surface.LoadBitmap(30, 0);	
-		bmpEmptyBox = Surface.LoadBitmap(30, 1);
+	{	
+		bmpBox = GFXSurface.GetSurface().LoadBitmap(WormboxBitmapID);	
+		bmpEmptyBox = GFXSurface.GetSurface().LoadBitmap(EmptyWormboxBitmapID);
 		
 		bmpBox = Bitmap.createScaledBitmap(bmpBox, GFXSurface.getScreenWidth()/3, GFXSurface.getScreenHeight()/15, true);
 		bmpEmptyBox = Bitmap.createScaledBitmap(bmpEmptyBox, GFXSurface.getScreenWidth()/3, GFXSurface.getScreenHeight()/15, true);

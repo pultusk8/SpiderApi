@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -65,6 +66,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 	Worm TouchedWorm = null;
 	Spider TouchedSpider = null;
 	
+	private int MainMenuBackgroundID = R.drawable.menu_background_hdpi;
 	private Bitmap bmpMainMenuBackground = null;
 	
 	@SuppressLint("NewApi")
@@ -109,7 +111,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		//Initialize Objects
 		WormBox.OnCreate();
 		pTerrarium = new Terrarium();
-		spider = new Spider();
+		spider = new Spider(0);
 		
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -125,7 +127,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 
 	private void LoadMainMenuBackground() 
 	{
-		bmpMainMenuBackground = Surface.LoadBitmap(400, 0);
+		bmpMainMenuBackground = Surface.LoadBitmap(MainMenuBackgroundID);
 		if(bmpMainMenuBackground != null)
 			bmpMainMenuBackground = Bitmap.createScaledBitmap(bmpMainMenuBackground, GFXSurface.getScreenWidth(), GFXSurface.getScreenHeight(), true);
 	}
@@ -230,7 +232,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 					if(WormBox.IsEmpty() && TouchedWorm == null)
 					{
 						//create new content activity with shop 
-						Worm worm = new Worm();
+						Worm worm = new Worm(0);
 						worm.SetIsInWormBox(true);
 					}
 					
@@ -271,239 +273,21 @@ public class GFXSurface extends Activity implements OnTouchListener
 				return;
 			
 			canvas.drawBitmap(bitmap, fPosX, fPosY, null);
-		}		
+		}
+		
+		public void OnDraw(Canvas canvas,Bitmap bitmap, Rect src, Rect dst)
+		{
+			if(bitmap == null || canvas == null)
+				return;
+			
+			canvas.drawBitmap(bitmap, src, dst, null);
+		}
 		
 		public Bitmap LoadBitmap(int BitmapID)
 		{
 			return BitmapFactory.decodeResource(getResources(), BitmapID);
 		}
-		
-		public Bitmap LoadBitmap(int ObjectID, int AnimationDirection, int AnimationFrame)
-		{		
-			Bitmap bmpTemp = null;
-			
-			//Spider ID
-			switch(ObjectID)
-			{
-				//Pajak Dybkowy
-				case 0:
-				{
-					//AnimationDirection
-					switch(AnimationDirection)
-					{
-						case 0:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}
-						case 1:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}
-						case 2:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}
-						case 3:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}						
-						case 4:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}	
-						case 5:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}	
-						case 6:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}	
-						case 7:
-						{
-							//AnimationFrame
-							switch(AnimationFrame)
-							{
-								case 0: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-								case 1: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-								case 2: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-								case 3: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-								case 4: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-								case 5: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-								case 6: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-								case 7: bmpTemp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-								default: break;
-							}	
-						}						
-						default: break;
-					}
-				}
-				//Next Spider
-				case 1: break;
 				
-				default: break;
-			}
-			
-			return bmpTemp;
-		}
-		
-		public Bitmap LoadBitmap(int ObjectID, int BitmapID)
-		{
-			Bitmap bmp = null;
-			
-			switch(ObjectID)
-			{
-				//Spider
-				case 0:
-				{
-					switch(BitmapID)
-					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l1); break;
-						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l1a); break;
-						case 2: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l2); break;
-						case 3: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l3); break;
-						case 4: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l4); break;
-						case 5: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l4a); break;
-						case 6: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l5); break;
-						case 7: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.l6); break;	
-						default: break;
-					}
-					break;
-				}
-				case 1:
-				{
-					switch(BitmapID)
-					{
-						case 0: break;
-						case 1: break;
-						default: break;
-					}
-					break;					
-				}
-				//Test Worm
-				case 10:
-				{
-					switch(BitmapID)
-					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.worm); break;
-						default: break;
-					}
-					break;	
-				}
-				//Terrarium
-				case 20:
-				{
-					switch(BitmapID)
-					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.terrarium01); break;
-						default: break;
-					}
-					break;		
-				}
-				//worm box
-				case 30:
-				{
-					switch(BitmapID)
-					{
-						case 0: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wormbox01); break;
-						case 1: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wormbox01addworm); break;
-						
-						default: break;
-					}
-					break;					
-				}
-				
-				case 400: bmp = BitmapFactory.decodeResource(getResources(), R.drawable.menu_background_hdpi); break;
-				default: break;
-			}
-			
-			return bmp; 
-		}		
-		
 		public SurfaceClass(Context context)
 		{
 			super(context);

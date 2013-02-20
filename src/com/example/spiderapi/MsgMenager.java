@@ -10,7 +10,6 @@ public class MsgMenager
 	static private String X = "";
 	static private String Y = "";
 	static private String Z = "";
-	static private String fps = "";
 	private static int fpsnumber[] = { 0,0,0,0 };
 
 
@@ -67,19 +66,6 @@ public class MsgMenager
 			}
 			default: break;
 		}	
-
-		for(int i=0; i<4; ++i)
-		{
-			fps = "" + fpsnumber[i];
-			String temp2 = "res: " + fps;
-			canvas.drawText(temp2, 20, 600+i*25, paint);
-		}
-		
-		for(int i=0; i<4; ++i)
-		{
-			if(stringtable[i] != null)
-				canvas.drawText(stringtable[i], 200, 600+i*25, paint);
-		}
 	}
 
 	public static void AddMassage(int msgtype, String string) 

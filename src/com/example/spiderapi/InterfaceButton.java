@@ -16,12 +16,12 @@ public class InterfaceButton
 	public InterfaceButton(int ButtonID)
 	{
 		nButtonID = ButtonID;
-		nBitmapID = ButtonBitmapIDTable[nButtonID-300];
 		OnCreate();
 	}
 	
 	public void OnCreate()
 	{			
+		nBitmapID = ButtonBitmapIDTable[nButtonID-300];
 		bmpBitmap = GFXSurface.GetSurface().LoadBitmap(nBitmapID);
 			
 		if(bmpBitmap == null)
@@ -60,6 +60,10 @@ public class InterfaceButton
 				nPositionX = 200;
 				nPositionY = 400;
 				break;
+			case 304:
+				nPositionX = 200;
+				nPositionY = 500;
+				break;			
 				
 			default: break;
 		}
@@ -141,6 +145,7 @@ public class InterfaceButton
 		R.drawable.ingame_button_spider, 
 		R.drawable.ingame_button_wormbox, 
 		R.drawable.mainmenu_button_play, 
+		R.drawable.mainmenu_button_options,
 
 	};
 }

@@ -48,13 +48,29 @@ public class ButtonMenager
 	public static void CreateButtons(EnumGameState currentGameState)
 	{
 		RemoveButtons();
+		/*
+		int ButtonTable[][] =
+		{
+			{ 1,300 },
+			{ 1,301 },
+			{ 1,302 },
+			{ , },
+			{ , },
+			{ , },
+			{ , },
+			{ , },
+			{ , },
+			{ , },
+			//{ , },
+		}
+		*/
 		
 		switch(currentGameState)
 		{
 			case MainMenu:
 			{
 				new InterfaceButton(303);
-				//new InterfaceButton(301);
+				new InterfaceButton(304);
 				//new InterfaceButton(302);
 				break;
 			}

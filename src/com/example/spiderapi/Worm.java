@@ -6,26 +6,43 @@ public class Worm extends Animal
 {		
 	private boolean IsInWormBox = false;
 
-	public Worm() 
+	public Worm(int objectID) 
 	{
+		ObjectID = objectID;
 		this.OnCreate();
 	}
 
 	@Override
 	protected void OnCreate() 
-	{
-		ObjectID = 10;
-		BitmapID = 0;	
-		
+	{	
 		super.OnCreate();
 
-		fWidth = 20.0f;
-		fHeight = 20.0f;
-		
-		fPosX = WormBox.GetPositionX() + 14;
-		fPosY = WormBox.GetPositionY() + 53;
+		PositionX = (int) (WormBox.GetPositionX() + 14);
+		PositionY = (int) (WormBox.GetPositionY() + 53);
 
 		WormMenager.AddWorm(this);
+	}
+
+	@Override
+	protected void GetAnimalSize() 
+	{
+		super.GetAnimalSize();
+		
+		AnimalWidth = 20;
+		AnimalHeight = 20;	
+	}
+
+	@Override
+	public void GetAnimalBitmapID() 
+	{
+		super.GetAnimalBitmapID();
+	
+		int WormBitmapIDTable[] = 
+		{
+			R.drawable.worm,
+		};
+		
+		bmpAnimalBitmapID = WormBitmapIDTable[ObjectID];		
 	}
 
 	@Override

@@ -12,12 +12,14 @@ public class Terrarium
 	
 	private Bitmap bitmap = null;
 
-	private int TerrariumID = 20;
-	private int TerrBitmapID = 0;
+	private int TerrBitmapID = R.drawable.terrarium01;
 	
 	public Terrarium()
 	{
-		this.bitmap = GFXSurface.GetSurface().LoadBitmap(TerrariumID, TerrBitmapID);
+		this.bitmap = GFXSurface.GetSurface().LoadBitmap(TerrBitmapID);
+		
+		if(bitmap == null) return;
+			
 		this.bitmap = Bitmap.createScaledBitmap(bitmap, GFXSurface.getScreenWidth(), (int) (GFXSurface.getScreenHeight() - WormBox.GetHeight()), true);
 		
 		fWidth = bitmap.getWidth();

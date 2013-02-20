@@ -2,6 +2,7 @@ package com.example.spiderapi;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 enum UnitFlag
 {
@@ -19,25 +20,31 @@ public class Animal
 {		
 	//Graphics
 	protected int ObjectID = 0;
-	protected int BitmapID = 0;
-	protected Bitmap bmpBitmapTable[][] = { { null } };
+	protected int bmpAnimalBitmapID = 0;
+	protected Bitmap bmpAnimalBitmap = null;
 	protected int AnimationCurrentState = 0;
 	protected int AnimationTimer = 1000; //first animation
 	protected int AnimationNextTimer = 1000; // time between animation change
 	protected int MaxAnimationsDirection = 8;
-	protected int MaxAnimationFrames = 8;	
+	protected int MaxAnimationFrames = 8;
+
+	protected Rect srcSampleAnimalBmp = new Rect(0,0,0,0);
+	protected Rect dstRectangleOnDraw = new Rect(0,0,0,0); 	
+
+	protected int AnimalBitmapHeight = 480;
+	protected int AnimalBitmapWidth = 640;
 	
 	//Flags
 	protected int MovementFlag = 0;
 	protected int UnitFlag = 0;
 	
 	//Positions
-	protected float fPosX = 50.0f;
-	protected float fPosY = 50.0f;
+	protected int PositionX = 50;
+	protected int PositionY = 50;
 	protected float fGoX = 50.0f;
 	protected float fGoY = 50.0f;
-	protected float fHeight = 0.0f;
-	protected float fWidth = 0.0f;
+	protected int AnimalHeight = 0;
+	protected int AnimalWidth = 0;
 	protected float fSpeed = 0.0f;
 	protected int Orientation = 0;
 	protected float fRadius = 0.0f;
@@ -49,19 +56,45 @@ public class Animal
 	protected int HungryTimer = 5000; //when spider whant to eat
 	
 	//Position Methods
-	public float GetX() { return fPosX; }
-	public float GetY() { return fPosY; }
-	public float GetW() { return fWidth; }
-	public float GetH() { return fHeight; }
-	public void SetPosition(float posX, float posY) { fPosX = posX; fPosY = posY; }
+	public float GetX() { return PositionX; }
+	public float GetY() { return PositionY; }
+	public float GetW() { return AnimalWidth; }
+	public float GetH() { return AnimalHeight; }
+	public void SetPosition(float posX, float posY) { PositionX = (int) posX; PositionY = (int) posY; }
 	public void SetMovementFlag(int Flag) { MovementFlag = Flag; }
+	
+	public Animal() 
+	{
+		this.OnCreate();
+	}
+	
+	public Animal(int objectID) 
+	{
+		ObjectID = objectID;
+		this.OnCreate();
+	}
 	
 	//Social Methods
 	public int GetHealth() { return Health; }
 	
 	protected void OnCreate()
 	{
-
+		GetAnimalBitmapID();
+		
+		bmpAnimalBitmap = GFXSurface.GetSurface().LoadBitmap(bmpAnimalBitmapID);
+			
+		GetAnimalSize();
+	}
+	
+	protected void GetAnimalSize() 
+	{	
+		AnimalHeight = 100;
+		AnimalWidth = 100;
+	}
+	
+	public void GetAnimalBitmapID() 
+	{
+		bmpAnimalBitmapID = R.drawable.l1;
 	}
 	
 	public void OnDraw(Canvas canvas)
@@ -69,8 +102,10 @@ public class Animal
 		if(UnitFlag == 1)
 			return;
 		
-		if(bmpBitmapTable[0][0] != null)
-			GFXSurface.GetSurface().OnDraw(canvas, bmpBitmapTable[0][0], fPosX-(bmpBitmapTable[0][0].getWidth()/2), fPosY-(bmpBitmapTable[0][0].getHeight()/2));
+		if(bmpAnimalBitmap == null)
+			return;
+		
+		GFXSurface.GetSurface().OnDraw(canvas, bmpAnimalBitmap, srcSampleAnimalBmp, dstRectangleOnDraw);
 	}
 	
 	public void OnUpdate(long diff)
@@ -80,17 +115,20 @@ public class Animal
 	
 	public void OnAnimate(long diff)
 	{
-		//BitmapID
-		//this.bitmap = Surface.LoadBitmap(ObjectID, AnimationCurrentState);	
 		if(AnimationTimer < diff)			
 		{
 			++AnimationCurrentState;
 			
-			if(AnimationCurrentState == MaxAnimationFrames)
+			if(AnimationCurrentState < MaxAnimationFrames)
 				AnimationCurrentState = 0;
 			
 			AnimationTimer = AnimationNextTimer;
 		}AnimationTimer -= diff;
+		
+		//Set Sample of Animal bitmap to show up
+		srcSampleAnimalBmp.set(AnimationCurrentState * AnimalBitmapWidth, Orientation * AnimalBitmapHeight, AnimalBitmapWidth, AnimalBitmapHeight);
+		//scale the sample
+		dstRectangleOnDraw.set(PositionX-AnimalWidth/2, PositionY-AnimalHeight/2, PositionX+AnimalWidth/2, PositionY+AnimalHeight/2);		
 	}
 	
 	public void OnRemove()	
@@ -100,7 +138,7 @@ public class Animal
 	
 	public boolean IsOnPosition(float fOnTouchX, float fOnTouchY)
 	{
-		if( ( fOnTouchX > fPosX-(fWidth/2) ) && ( fOnTouchX < fPosX + (fWidth/2)) && ( fOnTouchY > fPosY - (fHeight/2) ) && ( fOnTouchY < fPosY + (fHeight/2) ) )	
+		if( ( fOnTouchX > PositionX-(AnimalWidth/2) ) && ( fOnTouchX < PositionX + (AnimalWidth/2)) && ( fOnTouchY > PositionY - (AnimalHeight/2) ) && ( fOnTouchY < PositionY + (AnimalHeight/2) ) )	
 				return true;
 
 	    return false;
@@ -123,7 +161,7 @@ public class Animal
 	
 	public boolean IsInRange(Spider spider) 
 	{
-		if(GetDistance(fPosX, fPosY, spider.GetX(),  spider.GetY()) < fRadius + spider.fRadius)
+		if(GetDistance(PositionX, PositionY, spider.GetX(),  spider.GetY()) < fRadius + spider.fRadius)
 			return true;
 	
 		return false;
