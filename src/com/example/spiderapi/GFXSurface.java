@@ -28,14 +28,15 @@ enum EnumGameState
 	InGameMenu,
 	InGameSpiderStat,
 	InGameWormShop,
-	MainMenu
+	MainMenu,
+	LaunchingScreen,
 }
 
 public class GFXSurface extends Activity implements OnTouchListener
 {
 	//Game Options
 	//actual gamestate
-	private static EnumGameState CurrentGameState = EnumGameState.MainMenu;
+	private static EnumGameState CurrentGameState = EnumGameState.LaunchingScreen;
 	//Bool for end of game
 	private static boolean IsRunning = false;
 	
@@ -43,31 +44,30 @@ public class GFXSurface extends Activity implements OnTouchListener
     private static int screenHeight;
     private static int screenWidth;	
     //Screen Size methods
-    static int getScreenHeight() { return screenHeight; }
-    static int getScreenWidth() { return screenWidth; }
+    public static int getScreenHeight() { return screenHeight; }
+    public static int getScreenWidth() { return screenWidth; }
     //  
-	static SurfaceClass Surface 	= null;
-	static Terrarium pTerrarium 	= null;
+    private static SurfaceClass Surface 	= null;
+    private static Terrarium pTerrarium 	= null;
 	
 	static Spider spider    = null;
-	WakeLock wL 			= null;
+	private WakeLock wL     = null;
 	
 	boolean CanGetMoveOrders = true;
 	
-	long StartTime, CurrentTime;
-	long LastCurrentTime;
-	
+	private long LastCurrentTime, CurrentTime;
+	private static long LaunchingScreenTimer = 5000;
 	//Save Load Variables
-	public static String filename = "SaveData";
-	SharedPreferences Data = null;
+	private static String filename = "SaveData";
+	private SharedPreferences Data = null;
 
 	//OnTouch Actions
 	boolean IsWormBoxTaken = false;
 	Worm TouchedWorm = null;
 	Spider TouchedSpider = null;
 	
-	private int MainMenuBackgroundID = R.drawable.menu_background_hdpi;
-	private Bitmap bmpMainMenuBackground = null;
+	private static int BackgroundID = R.drawable.hello;	
+	private static Bitmap bmpBackground = null;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -75,8 +75,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 	{
 		super.onCreate(savedInstanceState);
 			
-		//Initialize Game
-		
+		//Initialize System
 		//full screen before all shit happens
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -93,25 +92,12 @@ public class GFXSurface extends Activity implements OnTouchListener
 		screenHeight = size.y;
 		screenWidth = size.x;
 		//
-
 		//Timer
-		CurrentTime = LastCurrentTime = 0;
-		StartTime = System.currentTimeMillis();
+		CurrentTime = LastCurrentTime = 0;	
 		
 		// !!! All objects loading bitmaps need to be below this line !!!
-		
 		//Load BackGround
-		
-		//Load Buttons
-		ButtonMenager.CreateButtons(CurrentGameState);	
-		
-		//Initialize AnimalMenager
-		WormMenager.OnCreate();
-		
-		//Initialize Objects
-		WormBox.OnCreate();
-		pTerrarium = new Terrarium();
-		spider = new Spider(0);
+		LoadBackground();	
 		
 		//wakelock
 		PowerManager pM = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -119,17 +105,14 @@ public class GFXSurface extends Activity implements OnTouchListener
 		wL.acquire();
 		
 		//save load 
-		Data = getSharedPreferences(filename, 0);	
-		
-		//Prepare MainMenu
-		LoadMainMenuBackground();		
+		Data = getSharedPreferences(filename, 0);		
 	}
 
-	private void LoadMainMenuBackground() 
+	private static void LoadBackground() 
 	{
-		bmpMainMenuBackground = Surface.LoadBitmap(MainMenuBackgroundID);
-		if(bmpMainMenuBackground != null)
-			bmpMainMenuBackground = Bitmap.createScaledBitmap(bmpMainMenuBackground, GFXSurface.getScreenWidth(), GFXSurface.getScreenHeight(), true);
+		bmpBackground = Surface.LoadBitmap(BackgroundID);
+		if(bmpBackground != null)
+			bmpBackground = Bitmap.createScaledBitmap(bmpBackground, GFXSurface.getScreenWidth(), GFXSurface.getScreenHeight(), true);
 	}
 	
 	private void OnSave()
@@ -189,10 +172,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		
 		if(TouchedSpider != null)
 			TouchedSpider.SetPosition(fOnTouchX, fOnTouchY);
-		
-		if(IsWormBoxTaken)
-			WormBox.SetPosition(fOnTouchX, fOnTouchY);
-		
+				
 		switch(event.getAction())
 		{
 			case MotionEvent.ACTION_DOWN:
@@ -210,10 +190,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 					TouchedSpider.SetMovementFlag(3);
 				}
 				
-				//if(TouchedSpider == null &&  TouchedWorm == null)
-					//if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
-						//IsWormBoxTaken = true;
-				
 				break;
 			}
 			
@@ -225,7 +201,6 @@ public class GFXSurface extends Activity implements OnTouchListener
 					bButton = null; 
 					break; 
 				} 
-				
 				
 				if(WormBox.IsOnPosition(fOnTouchX, fOnTouchY))
 				{
@@ -245,10 +220,15 @@ public class GFXSurface extends Activity implements OnTouchListener
 				IsWormBoxTaken = false;
 				TouchedWorm = null;
 				TouchedSpider = null;
-				spider.SetMovementFlag(1);
+				bButton = null;
 				
-				if(CanGetMoveOrders)
-					spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
+				if(spider != null)
+				{
+					spider.SetMovementFlag(1);
+				
+					if(CanGetMoveOrders)
+						spider.SetUpWaypoint(fOnTouchX, fOnTouchY, 0);
+				}
 				break;
 			}
 			default:
@@ -258,7 +238,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 		return true;
 	}
 	
-	static public SurfaceClass GetSurface() { return Surface; }
+	public static SurfaceClass GetSurface() { return Surface; }
 	public static Terrarium GetTerrarium() { return pTerrarium; }
 	
 	public class SurfaceClass extends SurfaceView implements Runnable
@@ -302,6 +282,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 				try
 				{
 					ThreadOne.join();
+					ThreadTwo.join();
 				}
 				catch (InterruptedException e)
 				{
@@ -310,6 +291,9 @@ public class GFXSurface extends Activity implements OnTouchListener
 				break;
 			}
 			ThreadOne = null;
+			ThreadTwo = null;
+			
+			finish();      		//kill loading screen activity
 		}
 		
 		public void resume()
@@ -326,10 +310,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 			Thread currentthread = Thread.currentThread();
 			if(currentthread == null)
 				return;
-				
-			//int fpscounter = 0;
-			//int fpstimer = 100;
-			
+						
 			while(IsRunning)
 			{	
 				CurrentTime = System.currentTimeMillis();	
@@ -343,9 +324,16 @@ public class GFXSurface extends Activity implements OnTouchListener
 					
 					Canvas canvas = surfHolder.lockCanvas();
 					canvas.drawRGB(0, 0, 0);
+					
+					if(bmpBackground != null) 
+						Surface.OnDraw(canvas, bmpBackground, 0, 0);
 									
 					switch(CurrentGameState)
 					{
+						case LaunchingScreen:
+						{
+							break;
+						}
 					    case LoadingScreen:
 					    {
 					    	break;
@@ -373,7 +361,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 						}
 						case MainMenu:
 						{
-							if(bmpMainMenuBackground != null) Surface.OnDraw(canvas, bmpMainMenuBackground, 0, 0);
+							
 							break;
 						}
 						default: break;
@@ -387,13 +375,28 @@ public class GFXSurface extends Activity implements OnTouchListener
 				
 				if(currentthread == ThreadTwo)
 				{	
+					switch(CurrentGameState)
+					{
+						case LaunchingScreen:
+						{
+					    	if(LaunchingScreenTimer < TimeDiff)
+					    	{
+					    		SetCurrentGameState(EnumGameState.MainMenu);
+					    	}LaunchingScreenTimer -= TimeDiff;	
+					    	
+							break;
+						}
+						
+						default:
+							break;
+					}
+					
 					MsgMenager.OnUpdate(TimeDiff);
 					
 					try
 					{
 						float FrameRate = 60;
 						float PauseTime = 1000 / FrameRate;
-						//MsgMenager.AddMssage(0,(int) PauseTime);
 						Thread.sleep((long) PauseTime);	
 					} 
 					catch (InterruptedException e) 
@@ -403,7 +406,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 						
 					if(spider != null)		
 						spider.OnUpdate(TimeDiff);
-					
+
 					WormBox.OnUpdate(TimeDiff);
 					
 					WormMenager.OnUpdate(TimeDiff);
@@ -414,15 +417,29 @@ public class GFXSurface extends Activity implements OnTouchListener
 
 	public static EnumGameState GetCurrentGameState() { return CurrentGameState; }
 	
-	public static void SetCurrentGameStatte(EnumGameState GameState) 
+	public static void SetCurrentGameState(EnumGameState GameState) 
 	{ 
 		//Do everything from old state
-		
-		
+
 		CurrentGameState = GameState; 
 		
 		//Do everything from new state
-		ButtonMenager.CreateButtons(CurrentGameState);
+		switch(CurrentGameState)
+		{
+			case MainMenu:
+				BackgroundID = R.drawable.menu_background_hdpi;
+				LoadBackground(); 
+				break;
+				
+			case Game:
+				WormMenager.OnCreate();
+				WormBox.OnCreate();
+				pTerrarium = new Terrarium();
+				spider = new Spider(0);
+				break;
+
+			default: break;
+		}
 		
 		//Zainicjuj Guziki 
 		
@@ -431,6 +448,8 @@ public class GFXSurface extends Activity implements OnTouchListener
 		//zainicjuj narzedzia danego stanu gry	
 		
 		//przy kazdej inicjajci kasacja dotychczasowego stanu
+		
+		ButtonMenager.CreateButtons(CurrentGameState);
 	}
 	public static void QuitFromGame() 
 	{

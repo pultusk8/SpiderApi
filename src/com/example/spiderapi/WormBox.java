@@ -1,10 +1,7 @@
 package com.example.spiderapi;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-
-import com.example.spiderapi.GFXSurface.SurfaceClass;
 
 public class WormBox 
 {

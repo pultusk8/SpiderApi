@@ -12,12 +12,6 @@ public class MsgMenager
 	static private String Z = "";
 	private static int fpsnumber[] = { 0,0,0,0 };
 
-
-	static public void AddMssage(int msgtype, int Fps)
-	{
-		fpsnumber[msgtype] = Fps;
-	}
-	
 	static public void OnUpdate(long timeDiff)
 	{
 		if(GFXSurface.spider != null)
@@ -39,6 +33,8 @@ public class MsgMenager
 		{
 		    case LoadingScreen:
 		    {
+				String temp1 = "Loading: " + Z;
+				canvas.drawText(temp1, 20, 550, paint);		
 		    	break;
 		    }
 			case Game:
@@ -67,6 +63,11 @@ public class MsgMenager
 			default: break;
 		}	
 	}
+	
+	static public void AddMssage(int msgtype, int Fps)
+	{
+		fpsnumber[msgtype] = Fps;
+	}	
 
 	public static void AddMassage(int msgtype, String string) 
 	{

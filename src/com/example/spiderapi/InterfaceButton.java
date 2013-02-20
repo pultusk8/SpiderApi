@@ -103,19 +103,19 @@ public class InterfaceButton
 		{
 			case 300: 
 				if(GFXSurface.GetCurrentGameState() == EnumGameState.InGameMenu)
-					GFXSurface.SetCurrentGameStatte(EnumGameState.Game);
+					GFXSurface.SetCurrentGameState(EnumGameState.Game);
 				else
-					GFXSurface.SetCurrentGameStatte(EnumGameState.InGameMenu);
+					GFXSurface.SetCurrentGameState(EnumGameState.InGameMenu);
 				break;
 			case 301:
 				if(GFXSurface.GetCurrentGameState() == EnumGameState.InGameSpiderStat)
-					GFXSurface.SetCurrentGameStatte(EnumGameState.Game);
+					GFXSurface.SetCurrentGameState(EnumGameState.Game);
 				else
-					GFXSurface.SetCurrentGameStatte(EnumGameState.InGameSpiderStat);			
+					GFXSurface.SetCurrentGameState(EnumGameState.InGameSpiderStat);			
 				break;
 			case 303:
 				if(GFXSurface.GetCurrentGameState() == EnumGameState.MainMenu)
-					GFXSurface.SetCurrentGameStatte(EnumGameState.Game);		
+					GFXSurface.SetCurrentGameState(EnumGameState.Game);		
 				break;				
 				
 			default: break;
