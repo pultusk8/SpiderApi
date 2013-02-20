@@ -10,7 +10,7 @@ public class phonemenu_pref extends PreferenceActivity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.prefs);
+		//addPreferencesFromResource(R.xml.prefs);
 	}
 	
 	

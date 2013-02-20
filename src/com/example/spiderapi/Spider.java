@@ -2,10 +2,6 @@ package com.example.spiderapi;
 
 import java.util.Random;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-
 public class Spider extends Animal
 {	
 	private int SluffLevel = 0;//wylinka ze slownika :D
@@ -20,13 +16,7 @@ public class Spider extends Animal
 	
 	//Pointers
 	private Worm worm = null;	
-		
-	public Spider()
-	{
-		ObjectID = 0;
-		this.OnCreate();
-	}	
-	
+
 	public Spider(int objectID)
 	{
 		ObjectID = objectID;
