@@ -1,5 +1,5 @@
 package com.example.spiderapi;
-
+// jestem komentarzem :D
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
