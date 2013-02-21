@@ -343,7 +343,7 @@ public class GFXSurface extends Activity implements OnTouchListener
 									
 									if(spider != null)	
 										spider.OnDraw(canvas);
-											
+									//asdasdasd		
 									//WormBox.OnDraw(canvas);
 									break;
 								}
